@@ -192,6 +192,16 @@ data.frame(ZAVUS24_Doses %>% filter(grepl("CGRP", drug_class)) %>%
              group_by(patid) %>% count() %>% ungroup() %>% rename("classes"="n") %>%
   group_by(classes) %>% count() %>% mutate(n=round(n/191,2)))
 
+#   classes    n
+# 1       1 0.13
+# 2       2 0.23
+# 3       3 0.27
+# 4       4 0.17
+# 5       5 0.10
+# 6       6 0.07
+# 7       7 0.02
+# 8       8 0.01
+
 
 ZAVUS24_Doses %>% filter(grepl("CGRP", drug_class)) %>% 
   group_by(patid) %>% count() %>% ungroup() %>% rename("classes"="n") %>% summarise(mean=mean(classes)) # 3.2
@@ -209,7 +219,12 @@ ZAVUS24_Doses %>% select(patid) %>% distinct() %>% left_join(
 )  %>% mutate(classes=ifelse(is.na(classes),0,classes)) %>%
   group_by(classes) %>% count() %>% mutate(n=round(n/191,2)))
 
-
+#   classes    n
+# 1       0 0.32
+# 2       1 0.37
+# 3       2 0.20
+# 4       3 0.07
+# 5       4 0.03
 
 ZAVUS24_Doses %>% select(patid) %>% distinct() %>% left_join(
   ZAVUS24_Doses %>% filter(grepl("Triptan", drug_class)) %>%
@@ -231,6 +246,14 @@ ZAVUS24_Doses %>% select(patid) %>% distinct() %>% left_join(
 )  %>% mutate(classes=ifelse(is.na(classes),0,classes)) %>%
   group_by(classes) %>% count() %>% mutate(n=round(n/191,2)))
 
+# 1       0 0.19
+# 2       1 0.28
+# 3       2 0.21
+# 4       3 0.18
+# 5       4 0.08
+# 6       5 0.04
+# 7       6 0.01
+# 8       8 0.01
 
 ZAVUS24_Doses %>% select(patid) %>% distinct() %>% left_join(
   ZAVUS24_Doses %>% filter(grepl("NSAID", drug_class)) %>%
@@ -252,6 +275,16 @@ ZAVUS24_Doses %>% select(patid) %>% distinct() %>% left_join(
 )  %>% mutate(classes=ifelse(is.na(classes),0,classes)) %>%
   group_by(classes) %>% count() %>% mutate(n=round(n/191,2)))
 
+# 1        0 0.26
+# 2        1 0.16
+# 3        2 0.18
+# 4        3 0.12
+# 5        4 0.10
+# 6        5 0.08
+# 7        6 0.03
+# 8        7 0.04
+# 9        8 0.03
+# 10       9 0.01
 
 ZAVUS24_Doses %>% select(patid) %>% distinct() %>% left_join(
   ZAVUS24_Doses %>% filter(grepl("Opioid", drug_class)) %>%
@@ -688,6 +721,12 @@ ZAVUS24_Drug_Histories <- ZAVUS24_Drug_Histories %>% group_by(patient, drug_grou
 ZAVUS24_Drug_Histories %>% ungroup() %>% group_by(drug_group) %>% summarise(mean=mean(n))
 
 
+#   drug_group       mean
+# 1 CGRP Injectable  19.8
+# 2 CGRP Oral        10.0
+# 3 Preventive       27.4
+# 4 Symptomatic      19.1
+# 5 Triptans         14.7
 
 ZAVUS24_Drug_Histories %>% ungroup() %>%
   mutate(drug_group=factor(drug_group, levels=c( "CGRP Oral", "Triptans",  "Symptomatic",  "CGRP Injectable","Preventive" ))) %>%
@@ -1185,7 +1224,6 @@ MIGUS24_Demographics <- ZAVUS24_Demographics %>% bind_rows(MIGUS24_Demographics)
 
 # DRUG LOOKUP
 ZAVUS24_Doses <- fread("Source/ZAVUS24 Doses.txt")
-Drugs_lookup_1 <- ZAVUS24_Doses %>% select(drug_id, drug_class, drug_group) %>% distinct()
 MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
 Drugs_lookup <- MIGUS24_Doses %>% select(drug_id, generic, drug_class, drug_group) %>% distinct()
 Drugs_lookup <- Drugs_lookup %>% arrange(drug_id)
@@ -1219,7 +1257,8 @@ fwrite(MIGUS24_Drug_Histories, "Source/MIGUS24_Drug_Histories_Extended.txt")
 
 All_pats <- MIGUS24_Drug_Histories %>%  select(patid, version, weight) %>% distinct()
 All_pats %>% group_by(version) %>% summarise(n=sum(weight))
-
+# 1 NEW_ZAV 21292150.
+# 2 OLD_ZAV      218 
 
 MIGUS24_Drug_Histories <- gather(MIGUS24_Drug_Histories, Month, Treat, month1:month60, factor_key=TRUE)
 MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% filter(Treat!="-")
@@ -1971,6 +2010,8 @@ MIGUS24_Doses_version_NS %>% mutate(from_dt=as.Date(from_dt)) %>%
   select(patid, days_sup, qty) %>% distinct() %>%
   summarise(days_sup=mean(days_sup), qty=mean(qty))
 
+#   days_sup   qty
+# 1     105.  30.8
 
 
 MIGUS24_Doses_version_NS %>% mutate(from_dt=as.Date(from_dt)) %>%
@@ -4107,6 +4148,16 @@ unique(df$group)
 df %>% select(patient, weight, First_SUMA, group) %>% distinct() %>%
   group_by(group) %>% summarise(n=sum(weight))
 
+# 1     1 2087974.
+# 2     2 2342256.
+# 3     3 1224009.
+# 4     4  365483.
+# 5     5  129890.
+# 6     6   22096.
+# 7     7    3498.
+# 8     8     517.
+# 9    10     185.
+
 
 
 unique(df$group)
@@ -4663,6 +4714,17 @@ temp %>%
   filter(!grepl("Z",s1) & grepl("Z",s2)) %>% 
   distinct() %>% group_by(Box) %>% count() %>% mutate(n=n/192) # 10% missing
 
+# 1 Acute      0.0625
+# 2 CGRP_Inj   0.219 
+# 3 CGRP_Oral  0.417 
+# 4 Prev       0.0521
+# 5 Prev_Acute 0.0469
+# 6 Prev_Sympt 0.0417
+# 7 Sympt      0.0625
+# 8 Lapsed missing
+
+
+
 
 
 
@@ -4719,6 +4781,13 @@ temp %>% select(patient, p2, s1, s2, Box) %>%
   distinct() %>% group_by(Box) %>% count() %>% mutate(n=n/54) # 11% missing
 
 
+# 1 Acute      0.0370
+# 2 CGRP_Inj   0.204 
+# 3 CGRP_Oral  0.426 
+# 4 Prev       0.0185
+# 5 Prev_Acute 0.0556
+# 6 Prev_Sympt 0.111 
+# 7 Sympt      0.0370
 # -------------
 # Zavegepant  patients waterfall ON January 2024 W/O Comorbidity --------------
 
@@ -5328,7 +5397,7 @@ diff %>% ggplot(aes(diff)) + geom_density()
 
 
 # ----------------
-# Pathways to preventive - number acute molecules before 1st preventive Pats with 1st Prev AFTER MIG Dx---------------------------------
+# Pathways to preventive - number acute molecules before 1st preventive Pats with 1st Prev AFTER MIG Dx ---------------------------------
 
 Drugs_lookup <- fread("Source/Drugs_lookup.txt")
 unique(Drugs_lookup$drug_group)
@@ -5419,7 +5488,7 @@ before  %>% left_join(Drugs_lookup %>% select(drug_id, drug_class, drug_group) %
 # ---------
 
 
-# Months between onset Dx and 1st prev Pats with 1st Prev AFTER MIG Dx---------------------------------
+# Months between onset Dx and 1st prev Pats with 1st Prev AFTER MIG Dx ---------------------------------
 
 Drugs_lookup <- fread("Source/Drugs_lookup.txt")
 unique(Drugs_lookup$drug_group)
@@ -5500,7 +5569,7 @@ string_Preventive <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$dru
 
 string_Sympt <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="Symptomatic"], collapse = "|"),")\\b")
 string_Triptan <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="Triptans"], collapse = "|"),")\\b")
-string_Prev <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive")&(Drugs_lookup$drug_class=="Muscle Relaxant")], collapse = "|"),")\\b")
+string_Prev <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive")&(Drugs_lookup$drug_class!="Muscle Relaxant")], collapse = "|"),")\\b")
 string_CGRP_Oral <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="CGRP Oral"], collapse = "|"),")\\b")
 string_CGRP_Inj <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="CGRP Injectable"], collapse = "|"),")\\b")
 string_CGRP_Nasal <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="CGRP Nasal"], collapse = "|"),")\\b")
@@ -5573,6 +5642,7 @@ groups <- groups %>% left_join(N_sympt) %>%
 
 groups %>% group_by(group) %>% summarise(n=sum(weight))
 
+groups <- fread("Groups_Up_to_First_Preventive.txt")
 
 # N TRIPTANS / SYMPTOMATIC BEFORE 1st PREVENTIVE
 
@@ -5616,6 +5686,38 @@ groups %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
   mutate(perc=CGRP/(CGRP+`<NA>`))
 
 
+# EVER CGRP Inj
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- groups %>% select(patid) %>% inner_join(MIGUS24_Drug_Histories_Extended_NoComorbs)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>% filter(Treat!="-")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Inj, Treat)) %>%
+  select(patid) %>% mutate(CGRP="CGRP")
+
+groups %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  group_by(group, CGRP) %>% count() %>% spread(key=CGRP, value=n) %>%
+  mutate(perc=CGRP/(CGRP+`<NA>`))
+
+
+
+# EVER CGRP Oral
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- groups %>% select(patid) %>% inner_join(MIGUS24_Drug_Histories_Extended_NoComorbs)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>% filter(Treat!="-")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Oral, Treat)) %>%
+  select(patid) %>% mutate(CGRP="CGRP")
+
+groups %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  group_by(group, CGRP) %>% count() %>% spread(key=CGRP, value=n) %>%
+  mutate(perc=CGRP/(CGRP+`<NA>`))
+
 # MONTHS LAPSED
 
 MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
@@ -5628,6 +5730,54 @@ MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoC
 
 groups %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>% ungroup() %>%
   group_by(group) %>% mutate(n=ifelse(is.na(n),0,n)) %>% summarise(mean=mean(n))
+
+
+# MONTHS PREVENTIVE
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- groups %>% select(patid) %>% inner_join(MIGUS24_Drug_Histories_Extended_NoComorbs)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>%  distinct() %>% filter(grepl(string_Preventive, Treat))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(patid) %>% count()
+
+groups %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>% ungroup() %>%
+  group_by(group) %>% mutate(n=ifelse(is.na(n),0,n)) %>% summarise(mean=mean(n))
+
+
+
+# SPECIALTY FIRST PREVENTIVE
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_group=="Preventive"|drug_group=="CGRP Injectable")
+unique(MIGUS24_Doses$drug_group)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, from_dt, provcat) %>% distinct() %>% 
+  mutate(from_dt=as.Date(from_dt)) %>% group_by(patid) %>% filter(from_dt==min(from_dt)) %>% distinct()
+
+PROVCAT <- read_excel("Source/CDM_Data_Reference_Lookup_Tables_V81.xlsx", sheet="PROVCAT", skip = 5)
+PROVCAT <- PROVCAT %>% select(PROVCAT, DESCRIPTION)  %>% mutate(PROVCAT=as.numeric(PROVCAT))
+
+MIGUS24_Doses <- MIGUS24_Doses %>%  inner_join(PROVCAT %>% select(PROVCAT, DESCRIPTION) %>% distinct(), by=c("provcat"="PROVCAT"))
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(groups %>% select(patid))
+
+unique(MIGUS24_Doses$DESCRIPTION)
+
+MIGUS24_Doses %>% filter(grepl("NEURO", DESCRIPTION)) %>% ungroup() %>% select(DESCRIPTION) %>% distinct()
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(grepl("NEUROL", DESCRIPTION)) %>% select(patid) %>% distinct() %>% mutate(NEURO="NEURO")
+
+
+groups %>% left_join(MIGUS24_Doses) %>% ungroup() %>%
+  group_by(group, NEURO) %>% count() %>% 
+  spread(key=NEURO, value=n) %>%
+  mutate(perc=NEURO/(NEURO+`<NA>`))
+
+
+
+
 
 
 # THERAPY LINES 
@@ -5711,3 +5861,3051 @@ ZAVUS24_Migraine_Dxs <- ZAVUS24_Migraine_Dxs %>% mutate()
 
 # ------------------
   
+# Class penetrance month before current after 1st preventive by one of the 4 groups ---------
+
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_Preventive <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive"|Drugs_lookup$drug_group=="CGRP Injectable")&!(Drugs_lookup$drug_class=="Muscle Relaxant")], collapse = "|"),")\\b")
+
+
+
+string_Sympt <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="Symptomatic"], collapse = "|"),")\\b")
+string_Triptan <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="Triptans"], collapse = "|"),")\\b")
+string_Prev <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive")&(Drugs_lookup$drug_class!="Muscle Relaxant")], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="CGRP Oral"], collapse = "|"),")\\b")
+string_CGRP_Inj <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="CGRP Injectable"], collapse = "|"),")\\b")
+string_CGRP_Nasal <- paste0("\\b(",paste0(Drugs_lookup$drug_id[Drugs_lookup$drug_group=="CGRP Nasal"], collapse = "|"),")\\b")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.Date(migraine_onset)) %>% filter(migraine_onset>="2019-11-16") %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Demographics %>% inner_join(MIGUS24_Drug_Histories_Extended_NoComorbs)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(ON_Prev=ifelse(grepl(string_Preventive, Treat), 1,0)) 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+  anti_join(MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Month<=12 & ON_Prev==1) %>% select(patid) %>% distinct())
+
+length(unique(MIGUS24_Drug_Histories_Extended_NoComorbs$patid))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs_temp <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+  inner_join(groups %>% filter(group=="Triptan") %>% select(patid) )
+
+
+groups %>% group_by(group) %>% summarise(n=sum(weight))
+
+Month_before <- MIGUS24_Drug_Histories_Extended_NoComorbs_temp %>% group_by(patid) %>%
+  filter(lead(ON_Prev)==1) %>% group_by(patid) %>% filter(Month==min(Month))
+
+sum(Month_before$weight)
+
+Month_before <- Month_before %>% mutate(Box=ifelse(grepl(string_CGRP_Nasal, Treat), "Nasal",
+                                   ifelse(grepl(string_CGRP_Oral, Treat), "Oral",
+                                          ifelse(grepl(string_CGRP_Inj, Treat), "Inj",
+                                                 ifelse(grepl(string_Preventive, Treat), "Prev",
+                                                        ifelse(grepl(string_Triptan, Treat), "Triptan",
+                                                               ifelse(grepl(string_Sympt, Treat), "Sympt", "Lapsed")))))))
+
+
+Month_before <- separate_rows(Month_before, Treat, sep = ",", convert=T )
+
+Month_before <- Month_before %>% left_join(Drugs_lookup %>% select(drug_id, drug_class) %>% 
+                             mutate(drug_id=as.character(drug_id)), by=c("Treat"="drug_id") ) %>%
+  select(patid, weight, drug_class) %>% distinct() %>% group_by(drug_class) %>% summarise(before=sum(weight))
+
+
+
+
+Month_current <- MIGUS24_Drug_Histories_Extended_NoComorbs_temp %>% group_by(patid) %>%
+  filter(ON_Prev==1) %>% group_by(patid) %>% filter(Month==min(Month))
+
+Month_current <- Month_current %>% mutate(Box=ifelse(grepl(string_CGRP_Nasal, Treat), "Nasal",
+                                   ifelse(grepl(string_CGRP_Oral, Treat), "Oral",
+                                          ifelse(grepl(string_CGRP_Inj, Treat), "Inj",
+                                                 ifelse(grepl(string_Preventive, Treat), "Prev",
+                                                        ifelse(grepl(string_Triptan, Treat), "Triptan",
+                                                               ifelse(grepl(string_Sympt, Treat), "Sympt", "Lapsed")))))))
+
+
+
+Month_current <- separate_rows(Month_current, Treat, sep = ",", convert=T )
+
+Month_current <- Month_current %>% mutate(Treat=as.character(Treat)) %>%
+  left_join(Drugs_lookup %>% select(drug_id, drug_class) %>% 
+                             mutate(drug_id=as.character(drug_id)), by=c("Treat"="drug_id") ) %>%
+  select(patid, weight, drug_class) %>% distinct() %>% group_by(drug_class) %>% summarise(current=sum(weight))
+
+
+
+
+
+Month_after <- MIGUS24_Drug_Histories_Extended_NoComorbs_temp %>% group_by(patid) %>%
+  filter(lag(ON_Prev)==1) %>% group_by(patid) %>% filter(Month==min(Month))
+
+Month_after <- Month_after %>% mutate(Box=ifelse(grepl(string_CGRP_Nasal, Treat), "Nasal",
+                                   ifelse(grepl(string_CGRP_Oral, Treat), "Oral",
+                                          ifelse(grepl(string_CGRP_Inj, Treat), "Inj",
+                                                 ifelse(grepl(string_Preventive, Treat), "Prev",
+                                                        ifelse(grepl(string_Triptan, Treat), "Triptan",
+                                                               ifelse(grepl(string_Sympt, Treat), "Sympt", "Lapsed")))))))
+
+
+Month_after <- separate_rows(Month_after, Treat, sep = ",", convert=T )
+
+Month_after <- Month_after %>% mutate(Treat=as.character(Treat)) %>%
+  left_join(Drugs_lookup %>% select(drug_id, drug_class) %>% 
+                             mutate(drug_id=as.character(drug_id)), by=c("Treat"="drug_id") ) %>%
+  select(patid, weight, drug_class) %>% distinct() %>% group_by(drug_class) %>% summarise(after=sum(weight))
+
+data.frame(Month_before %>% full_join(Month_current) %>% full_join(Month_after)) %>% arrange(drug_class)
+
+
+# -------
+# Compare Heavy vs Low Volume Treat ---------
+
+# Groups
+Dx_Months <- fread("Source/MIGUS24 Demographics.txt")
+Dx_Months <- Dx_Months %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.character(migraine_onset)) %>% mutate(migraine_onset=str_sub(migraine_onset,1L,7L))
+Dx_Months <- Dx_Months %>% select(migraine_onset) %>% distinct() %>% arrange(migraine_onset)
+Dx_Months <- Dx_Months %>% drop_na() %>% mutate(N=row_number()-13)
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.Date(migraine_onset)) %>% filter(migraine_onset>="2019-11-16") %>% select(patid,migraine_onset)
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  mutate(migraine_onset=as.character(migraine_onset)) %>% 
+  mutate(migraine_onset=str_sub(migraine_onset,1L,7L)) %>%
+  left_join(Dx_Months) %>% select(patid, N)
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+unique(groups$group)
+
+
+# Nr Lines
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>%
+  group_by(patid) %>% count() %>% inner_join(groups) %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low")) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# % Time Treated
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(Elapsed=60-N+1) %>%
+  group_by(patid, Elapsed) %>% count() %>% ungroup() %>%
+  mutate(perc=n/Elapsed) %>%
+  inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(perc))
+
+
+# Nr Molecules
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Nr Flows
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(patid) %>% filter(Treat!=lag(Treat)) %>% ungroup() %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Preventives 
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_Preventive <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive"|
+                                                                  Drugs_lookup$drug_group=="CGRP Injectable")&
+                                                                 !(Drugs_lookup$drug_class=="Muscle Relaxant")], collapse = "|"),")\\b")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid)) %>%
+  filter(grepl(string_Preventive, Treat)) %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>% filter(grepl(string_Preventive, Treat))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Age
+Age <- fread("Source/MIGUS24 Demographics.txt")
+Age <- Age %>% select(patid, AGE)
+
+Age  %>% inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(AGE))
+
+
+# Mig Dxs
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+MIGUS24_Comorbidities_Extended_Dxs %>% inner_join(groups %>% mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low"))) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Neurol
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, provcat) 
+  PROVCAT <- read_excel("Source/CDM_Data_Reference_Lookup_Tables_V81.xlsx", sheet="PROVCAT", skip = 5)
+PROVCAT <- PROVCAT %>% select(PROVCAT, DESCRIPTION)  %>% mutate(PROVCAT=as.numeric(PROVCAT))
+MIGUS24_Doses <- MIGUS24_Doses %>%  inner_join(PROVCAT %>% select(PROVCAT, DESCRIPTION) %>% distinct(), by=c("provcat"="PROVCAT"))
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(groups %>% select(patid))
+
+unique(MIGUS24_Doses$DESCRIPTION)
+
+specialties_drug_doses_alloc <- fread("Source/specialties_drug_doses_alloc.csv")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(specialties_drug_doses_alloc, by=c("DESCRIPTION"="original")) %>%
+  filter(final %in% c("GP", "IM", "NEURO", "OTHER PHYSICIAN") )
+  
+
+groups %>% 
+  left_join(MIGUS24_Doses %>% filter(final=="NEURO") %>% select(patid) %>% distinct() %>% mutate(NEURO="NEURO")) %>%
+  mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low")) %>%
+  group_by(group, NEURO) %>% count() %>% spread(key=NEURO, value=n) %>%
+  mutate(perc=NEURO/(NEURO+`<NA>`))
+
+
+groups %>% 
+  left_join(MIGUS24_Doses) %>%
+  mutate(group=ifelse(group=="Sympt_High"|group=="Triptan", "High", "Low")) %>%
+  group_by(group, final) %>% count() %>% drop_na() %>%
+  spread(key=final, value=n) %>%
+  mutate(perc=NEURO/(NEURO+IM+GP+`OTHER PHYSICIAN`))
+
+
+# --------
+
+# Compare Start Inj vs Start Oral ---------
+
+# Groups
+Dx_Months <- fread("Source/MIGUS24 Demographics.txt")
+Dx_Months <- Dx_Months %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.character(migraine_onset)) %>% mutate(migraine_onset=str_sub(migraine_onset,1L,7L))
+Dx_Months <- Dx_Months %>% select(migraine_onset) %>% distinct() %>% arrange(migraine_onset)
+Dx_Months <- Dx_Months %>% drop_na() %>% mutate(N=row_number()-13)
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.Date(migraine_onset)) %>% filter(migraine_onset>="2019-11-16") %>% select(patid,migraine_onset)
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  mutate(migraine_onset=as.character(migraine_onset)) %>% 
+  mutate(migraine_onset=str_sub(migraine_onset,1L,7L)) %>%
+  left_join(Dx_Months) %>% select(patid, N)
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+unique(groups$group)
+
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_CGRP_Inj <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Injectable")], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Oral")], collapse = "|"),")\\b")
+
+
+# CGRP inj pats
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+
+First_CGRP <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Inj, Treat)|grepl(string_CGRP_Oral, Treat)) %>% select(patid) %>% distinct() %>%
+  left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  filter(grepl(string_CGRP_Inj, Treat)|grepl(string_CGRP_Oral, Treat)) %>% group_by(patid) %>% filter(Month==min(Month)) %>% select(patid, Month, Treat) %>%
+  mutate(Inj=ifelse(grepl(string_CGRP_Inj, Treat),1,0)) %>% mutate(Oral=ifelse(grepl(string_CGRP_Oral, Treat),1,0)) %>%
+  select(patid, Month, Inj, Oral) %>% rename("First"="Month")
+
+First_CGRP %>% group_by(Inj, Oral) %>% count()
+
+First_CGRP <- First_CGRP %>% filter(!(Inj==1&Oral==1))
+
+First_CGRP <- First_CGRP %>% 
+  left_join(MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Inj, Treat)) %>% select(patid) %>% distinct() %>% mutate(Ever_Inj=1)) %>% 
+  left_join(MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Oral, Treat)) %>% select(patid) %>% distinct() %>% mutate(Ever_Oral=1)) 
+
+
+First_CGRP %>% group_by(Inj, Ever_Oral) %>% count()
+First_CGRP %>% group_by(Oral, Ever_Inj) %>% count()
+
+
+groups <- groups %>% inner_join(First_CGRP)  %>% mutate(group=ifelse(Inj==1, "Inj", "Oral")) %>% select(patid, group)
+
+
+# Nr Lines
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>%
+  group_by(patid) %>% count() %>% inner_join(groups)  %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# % Time Treated
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(Elapsed=60-N+1) %>%
+  group_by(patid, Elapsed) %>% count() %>% ungroup() %>%
+  mutate(perc=n/Elapsed) %>%
+  inner_join(groups) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(perc))
+
+
+# Nr Molecules
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Nr Flows
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(patid) %>% filter(Treat!=lag(Treat)) %>% ungroup() %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups ) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Preventives 
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_Preventive <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive"|
+                                                                  Drugs_lookup$drug_group=="CGRP Injectable")&
+                                                                 !(Drugs_lookup$drug_class=="Muscle Relaxant")], collapse = "|"),")\\b")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid)) %>%
+  filter(grepl(string_Preventive, Treat)) %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>% filter(grepl(string_Preventive, Treat))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups ) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Age
+Age <- fread("Source/MIGUS24 Demographics.txt")
+Age <- Age %>% select(patid, AGE)
+
+Age  %>% inner_join(groups ) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(AGE))
+
+
+# Mig Dxs
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+MIGUS24_Comorbidities_Extended_Dxs %>% inner_join(groups) %>%
+  ungroup() %>% group_by(group) %>% summarise(mean=mean(n))
+
+
+# Neurol
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, provcat) 
+  PROVCAT <- read_excel("Source/CDM_Data_Reference_Lookup_Tables_V81.xlsx", sheet="PROVCAT", skip = 5)
+PROVCAT <- PROVCAT %>% select(PROVCAT, DESCRIPTION)  %>% mutate(PROVCAT=as.numeric(PROVCAT))
+MIGUS24_Doses <- MIGUS24_Doses %>%  inner_join(PROVCAT %>% select(PROVCAT, DESCRIPTION) %>% distinct(), by=c("provcat"="PROVCAT"))
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(groups %>% select(patid))
+
+unique(MIGUS24_Doses$DESCRIPTION)
+
+specialties_drug_doses_alloc <- fread("Source/specialties_drug_doses_alloc.csv")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(specialties_drug_doses_alloc, by=c("DESCRIPTION"="original")) %>%
+  filter(final %in% c("GP", "IM", "NEURO", "OTHER PHYSICIAN") )
+  
+
+groups %>% 
+  left_join(MIGUS24_Doses %>% filter(final=="NEURO") %>% select(patid) %>% distinct() %>% mutate(NEURO="NEURO")) %>%
+  group_by(group, NEURO) %>% count() %>% spread(key=NEURO, value=n) %>%
+  mutate(perc=NEURO/(NEURO+`<NA>`))
+
+
+
+groups %>% 
+  left_join(MIGUS24_Doses) %>%
+  group_by(group, final) %>% count() %>% drop_na() %>%
+  spread(key=final, value=n) %>%
+  mutate(perc=NEURO/(NEURO+IM+GP+`OTHER PHYSICIAN`))
+
+
+# --------
+
+# Time from Dx to 1st CGRP over time & Probability of starting ---------
+
+
+Dx_Months <- fread("Source/MIGUS24 Demographics.txt")
+Dx_Months <- Dx_Months %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.character(migraine_onset)) %>% mutate(migraine_onset=str_sub(migraine_onset,1L,7L))
+Dx_Months <- Dx_Months %>% select(migraine_onset) %>% distinct() %>% arrange(migraine_onset)
+Dx_Months <- Dx_Months %>% drop_na() %>% mutate(N=row_number()-13)
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.Date(migraine_onset)) %>% filter(migraine_onset>="2019-11-16") %>% select(patid,migraine_onset)
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  mutate(migraine_onset=as.character(migraine_onset)) %>% 
+  mutate(migraine_onset=str_sub(migraine_onset,1L,7L)) %>%
+  left_join(Dx_Months) %>% select(patid, N)
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+unique(groups$group)
+
+
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_CGRP_Inj <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Injectable")], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Oral")], collapse = "|"),")\\b")
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+
+First_CGRP <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Inj, Treat)|grepl(string_CGRP_Oral, Treat)) %>% 
+  group_by(patid) %>% filter(Month==min(Month)) %>% rename("First"="Month") %>% select(patid, First)
+
+
+MIGUS24_Demographics %>% inner_join(First_CGRP) %>%
+  ggplot(aes(N, First-N)) +
+  geom_smooth(colour="firebrick", fill="deepskyblue4", method="loess") +
+  theme_minimal() +
+  xlab("\n Migraine Onset Month") +
+  ylab("Number of Elapsed MOnths \n From Migraine Onset to 1st CGRP \n ")
+
+
+
+MIGUS24_Demographics %>% left_join(First_CGRP %>% mutate(First=1)) %>%
+  mutate(First=ifelse(is.na(First),0,First)) %>%
+  ggplot(aes(N, First)) +
+  stat_smooth(colour="firebrick", fill="deepskyblue4", method = "glm", family="poisson") +
+  theme_minimal() +
+  coord_cartesian(ylim=c(0,0.04)) + 
+    xlab("\n Migraine Onset Month") +
+  ylab("Probability of having tried \n Any CGRP \n ")
+
+
+
+
+MIGUS24_Demographics %>% inner_join(First_CGRP)  %>%
+  ggplot(aes(N)) +
+  geom_density(colour="firebrick", fill="deepskyblue4", alpha=0.3, linewidth=2) +
+   theme_minimal() +
+  xlab("\n Migraine Onset Month") +
+  ylab("Proportion of CGRP Patients \n ")
+
+
+
+MIGUS24_Demographics %>% 
+  ggplot(aes(N)) +
+  geom_density(colour="firebrick", fill="deepskyblue4", alpha=0.3, linewidth=2) +
+   theme_minimal() +
+  xlab("\n Migraine Onset Month") +
+  ylab("Proportion of All Patients \n ")
+
+
+# -------------- 
+# Pathways Start Inj vs Start Oral ---------
+
+# Groups
+Dx_Months <- fread("Source/MIGUS24 Demographics.txt")
+Dx_Months <- Dx_Months %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.character(migraine_onset)) %>% mutate(migraine_onset=str_sub(migraine_onset,1L,7L))
+Dx_Months <- Dx_Months %>% select(migraine_onset) %>% distinct() %>% arrange(migraine_onset)
+Dx_Months <- Dx_Months %>% drop_na() %>% mutate(N=row_number()-13)
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.Date(migraine_onset)) %>% filter(migraine_onset>="2019-11-16") %>% select(patid,migraine_onset)
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  mutate(migraine_onset=as.character(migraine_onset)) %>% 
+  mutate(migraine_onset=str_sub(migraine_onset,1L,7L)) %>%
+  left_join(Dx_Months) %>% select(patid, N)
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+unique(groups$group)
+
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_CGRP_Inj <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Injectable")], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Oral")], collapse = "|"),")\\b")
+
+
+# CGRP pats
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+
+CGRP_Inj <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Inj, Treat)) %>% 
+  group_by(patid) %>% filter(Month==min(Month)) %>% rename("First_Inj"="Month") %>% select(patid, First_Inj)
+
+CGRP_Oral <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_CGRP_Oral, Treat)) %>% 
+  group_by(patid) %>% filter(Month==min(Month)) %>% rename("First_Oral"="Month") %>% select(patid, First_Oral)
+
+CGRP_Firsts <- CGRP_Inj %>% full_join(CGRP_Oral)
+
+CGRP_Firsts <- CGRP_Firsts %>% mutate(First=ifelse(is.na(First_Inj), First_Oral,
+                                    ifelse(is.na(First_Oral), First_Inj,
+                                           ifelse(First_Inj<=First_Oral, First_Inj, First_Oral))))
+
+CGRP_Firsts <- CGRP_Firsts %>% mutate(second=ifelse(First_Inj>First_Oral, First_Inj,
+                                                    ifelse(First_Oral>=First_Inj, First_Oral, NA)))
+
+
+CGRP_Firsts <- CGRP_Firsts %>% mutate(Inj=ifelse(is.na(First_Inj),0,1)) %>% mutate(Oral=ifelse(is.na(First_Oral),0,1))
+
+
+# Preventives 
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_Preventive <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive"|
+                                                                  Drugs_lookup$drug_group=="CGRP Injectable")&
+                                                                 !(Drugs_lookup$drug_class=="Muscle Relaxant")], collapse = "|"),")\\b")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Month, Treat)
+
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(CGRP_Firsts) %>%
+  filter(Month<=First) %>% filter(grepl(string_Preventive, Treat)) %>%
+  group_by(patid, Inj, Oral) %>% count() %>% ungroup() %>%
+  group_by(Inj, Oral) %>% summarise(mean=mean(n))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(CGRP_Firsts) %>% filter(Month<=First)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl(string_Preventive, Treat)) %>%
+  select(-Month) %>% distinct() %>%
+  group_by(patid, Inj, Oral) %>% count() %>% ungroup() %>%
+  group_by(Inj, Oral) %>% summarise(mean=mean(n))
+
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Month, Treat)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(CGRP_Firsts) %>%
+  filter(Month<=First) 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drugs_lookup %>% select(drug_id, drug_group), by=c("Treat"="drug_id")) %>%
+  group_by(patid, drug_group) %>% filter(Month==min(Month))
+
+
+
+data.frame(MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, drug_group) %>%
+  distinct() %>% group_by(patid) %>% mutate(drug_group=paste0(drug_group, collapse = " -> ")) %>%
+  distinct() %>% ungroup() %>% group_by(drug_group) %>% count() %>%
+  arrange(-n))
+
+
+
+
+
+
+# --------
+
+# Acute vs Preventive Riemgepant patients/scripts ---------
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- groups %>% select(patid) %>% inner_join(MIGUS24_Doses)
+RIME_pats <- MIGUS24_Doses %>% filter(generic=="Rimegepant") %>% select(patid) %>% distinct()
+MIGUS24_Doses <- RIME_pats %>% left_join(MIGUS24_Doses) %>% filter(generic=="Rimegepant")
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+range(MIGUS24_Doses$from_dt)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt >= "2022-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% arrange(patid, generic, from_dt) 
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, generic) %>% mutate(elapsed=as.numeric(lead(from_dt)-from_dt))
+MIGUS24_Doses <- MIGUS24_Doses %>% drop_na()
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(elapsed <= 92)
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(rate=30*(as.numeric(qty)/elapsed))
+
+MIGUS24_Doses %>% mutate(rate=ifelse(elapsed==0, 0, rate)) %>%
+  group_by(patid, weight, generic) %>% summarise(mean=mean(rate)) %>%
+  mutate(mean=ifelse(mean>=13, "Prev", "Acute")) %>%
+  ungroup() %>% group_by(generic, mean) %>% summarise(n=sum(as.numeric(weight)))
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(elapsed==0, 0, rate)) %>%
+  group_by(patid, weight, generic) %>% summarise(mean=mean(rate)) %>%
+  ggplot(aes(mean)) +
+  geom_density(colour="firebrick", linewidth=2, fill="deepskyblue4", alpha=0.5) +
+  xlim(0,30) +
+  theme_minimal() +
+  xlab("\n Average Treatment Rate per Month per Patient") + ylab("Patient density \n")
+
+
+
+
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- groups %>% select(patid) %>% inner_join(MIGUS24_Doses)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(generic=="Rimegepant")
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt >= "2021-05-15") %>% filter(days_sup  != "")
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% arrange(patid, generic, from_dt) 
+
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, generic) %>% mutate(elapsed=as.numeric(lead(from_dt)-from_dt))
+MIGUS24_Doses <- MIGUS24_Doses %>% drop_na()
+
+data.frame(MIGUS24_Doses) 
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(elapsed <= 92)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(rate=30*(as.numeric(qty)/elapsed))
+
+
+MIGUS24_Doses$from_dt <- substr(as.character(MIGUS24_Doses$from_dt), 1, 7)
+
+data.frame(MIGUS24_Doses %>% mutate(rate=ifelse(elapsed==0, 0, rate)) %>%
+             filter(from_dt!="2023-12"&from_dt!="2024-01") %>%
+  group_by(patid, weight, generic, from_dt) %>% summarise(mean=mean(rate)) %>%
+  mutate(mean=ifelse(mean>=13, "Prev", "Acute")) %>%
+  ungroup() %>% group_by(from_dt, generic, mean) %>% summarise(n=sum(as.numeric(weight))) %>%
+    ungroup() %>%
+  spread(key=mean, value=n)) %>%
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Acute_Proportion=100*Acute/(Acute+Prev)) %>%
+  ggplot(aes(from_dt, Acute_Proportion, colour="firebrick")) +
+  geom_point(colour="firebrick", size=3, alpha=0.5, stroke=2) +
+  theme_minimal() +
+  ylim(0,100) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  xlab("\n Month") + ylab("Proportion of Acute patient scripts \n")
+
+    
+# --------------
+# 2 box model Rimegepant flows ---------------------
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- groups %>% select(patid) %>% inner_join(MIGUS24_Doses)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(generic=="Rimegepant" & status != "G") %>% select(-c(provider, provcat, status, code, NPI, generic, drug_id, drug_class, drug_group))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt >= "2021-11-16"&from_dt <= "2023-11-16") %>% filter(days_sup!="")
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% arrange(patid, from_dt) 
+
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid) %>% mutate(elapsed=as.numeric(lead(from_dt)-from_dt))
+MIGUS24_Doses <- MIGUS24_Doses %>% drop_na()
+
+data.frame(MIGUS24_Doses) 
+
+#MIGUS24_Doses <- MIGUS24_Doses %>% filter(elapsed <= 92)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(rate=30*(as.numeric(qty)/elapsed))
+
+
+pats_m48 <- MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  filter(from_dt<="2022-11-16") %>%
+  group_by(patid) %>% filter(from_dt==max(from_dt)) %>%  ungroup() %>%
+  mutate(diff=as.numeric(as.Date("2022-11-16")-from_dt)) %>% 
+  filter(diff<=92) %>% select(patid, weight, rate) %>% rename("m48"="rate")
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  #filter(from_dt<="2022-06-16") %>%
+  group_by(patid) %>% filter(from_dt==max(from_dt)) %>%  ungroup() %>%
+  mutate(diff=as.numeric(as.Date("2023-11-16")-from_dt)) %>% 
+  filter(diff<=92) %>%
+  full_join(pats_m48) %>%  rename("m60"="rate") %>%
+  group_by(m48, m60) %>% summarise(n=sum(as.numeric(weight)))
+   
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  #group_by(patid) %>%  filter(from_dt==max(from_dt)) %>% filter(qty==max(qty)) %>% slice(1) %>% ungroup() %>%
+  #mutate(diff=as.numeric(as.Date("2023-05-15")-from_dt)) %>% 
+  #filter(diff<=122) %>%
+  group_by(patid, weight, rate) %>% count() %>%
+  spread(key=rate, value=n) %>%
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Prev=ifelse(is.na(Prev),0,Prev)) %>%
+  ggplot(aes(Acute, Prev)) +
+  geom_jitter(alpha=0.5)
+  
+   
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>%
+  group_by(patid) %>% filter(rate=="Prev"&lag(rate)=="Acute") %>% ungroup() %>%
+  summarise(n=sum(as.numeric(weight)))
+
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  group_by(patid) %>% filter(from_dt==max(from_dt)) %>%  ungroup() %>%
+  mutate(diff=as.numeric(as.Date("2023-11-16")-from_dt)) %>% 
+  filter(diff<=92) %>%
+  group_by(rate) %>% summarise(n=sum(as.numeric(weight)))
+   
+
+
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  group_by(patid) %>%  filter(from_dt==max(from_dt) ) %>% filter(from_dt>="2023-1-16") %>% 
+  select(patid, weight, rate) %>% rename("Final"="rate") %>%
+  full_join(
+    MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  group_by(patid) %>%  filter(from_dt==min(from_dt)) %>% filter(from_dt>="2023-11-16") %>% 
+  select(patid, weight, rate) %>% rename("First"="rate")
+  ) %>%
+  group_by(First, Final) %>% summarise(n=sum(as.numeric(weight)))
+
+
+
+
+MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  #group_by(patid) %>%  filter(from_dt==max(from_dt)) %>% filter(qty==max(qty)) %>% slice(1) %>% ungroup() %>%
+  #mutate(diff=as.numeric(as.Date("2023-05-15")-from_dt)) %>% 
+  #filter(diff<=122) %>%
+  group_by(patid, weight, rate) %>% count() %>%
+  spread(key=rate, value=n) %>%
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Prev=ifelse(is.na(Prev),0,Prev)) %>%
+  mutate(group=ifelse(Acute>0&Prev==0, "Acute",
+                      ifelse(Prev>0&Acute==0, "Prev", "Both"))) %>%
+  group_by(group) %>% summarise(n=sum(as.numeric(weight)))
+
+
+# -------------------------
+# Highest Therapy Used Year over Year ------
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- Mod_Sev %>% select(patid) %>% inner_join(MIGUS24_Drug_Histories_Extended_NoComorbs)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+sum(MIGUS24_Drug_Histories_Extended_NoComorbs$weight) # 12768773
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+
+Pats_months <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(-Treat) 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+  left_join(Drug_formulary, by=c("Treat"="drug_id")) %>% select(-Treat) %>% distinct()
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(exp=1) %>% spread(key=drug_group, value=exp)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs[is.na(MIGUS24_Drug_Histories_Extended_NoComorbs)] <- 0
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+  arrange(patid, Month) %>% group_by(patid) %>%
+  mutate(`CGRP Injectable`=cumsum(`CGRP Injectable`)) %>% mutate(`CGRP Injectable`=ifelse(`CGRP Injectable`==0,0,1)) %>%
+  mutate(`CGRP Nasal`=cumsum(`CGRP Nasal`)) %>% mutate(`CGRP Nasal`=ifelse(`CGRP Nasal`==0,0,1)) %>%
+  mutate(`CGRP Oral`=cumsum(`CGRP Oral`)) %>% mutate(`CGRP Oral`=ifelse(`CGRP Oral`==0,0,1)) %>%
+  mutate(Preventive=cumsum(Preventive)) %>% mutate(Preventive=ifelse(Preventive==0,0,1)) %>%
+  mutate(Symptomatic=cumsum(Symptomatic)) %>%  mutate(Symptomatic=ifelse(Symptomatic==0,0,1)) %>%
+  mutate(Triptans=cumsum(Triptans)) %>% mutate(Triptans=ifelse(Triptans==0,0,1))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(Box=ifelse(`CGRP Oral`==1, "CGRP_Oral",
+                                                                ifelse(`CGRP Injectable`==1, "CGRP_Inj",
+                                                                       ifelse(Preventive==1, "Prev",
+                                                                              ifelse(Triptans==1, "Triptan",
+                                                                                     ifelse(Symptomatic==1, "Sympt", "none"))))))
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- data.frame(Pats_months %>% 
+  left_join(MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, weight, Month, Box)) %>%
+  arrange(patid, Month) %>%
+  group_by(patid) %>% fill(Box) %>%
+    mutate(Box=ifelse(is.na(Box), "Lapsed", Box)))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Month %in% c(12,24,36,48,60)) %>%
+  spread(key=Month, value=Box)
+
+
+fwrite(MIGUS24_Drug_Histories_Extended_NoComorbs, "Highest_Cumm_Box_Years_MIGUS.txt")
+
+fwrite(MIGUS24_Drug_Histories_Extended_NoComorbs, "Highest_Cumm_Box_Years_MIGUS.csv")
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`60`=ifelse(`60`=="Sympt", "Triptan", `60`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`48`=ifelse(`48`=="Sympt", "Triptan", `48`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`36`=ifelse(`36`=="Sympt", "Triptan", `36`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`24`=ifelse(`24`=="Sympt", "Triptan", `24`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`12`=ifelse(`12`=="Sympt", "Triptan", `12`))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`60`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`48`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`36`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`24`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`12`) %>% summarise(n=sum(weight))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`48`, `60`) %>% summarise(n=sum(weight)) 
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`36`, `48`) %>% summarise(n=sum(weight)) 
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`24`, `36`) %>% summarise(n=sum(weight)) 
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`12`, `24`) %>% summarise(n=sum(weight)) 
+
+
+groups <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, `60`) 
+
+
+
+# ----------
+# Compare kpis based on highest box month 60 ------
+Dx_Months <- fread("Source/MIGUS24 Demographics.txt")
+Dx_Months <- Dx_Months %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.character(migraine_onset)) %>% mutate(migraine_onset=str_sub(migraine_onset,1L,7L))
+Dx_Months <- Dx_Months %>% select(migraine_onset) %>% distinct() %>% arrange(migraine_onset)
+Dx_Months <- Dx_Months %>% drop_na() %>% mutate(N=row_number()-13)
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, migraine_onset) %>%
+  mutate(migraine_onset=as.Date(migraine_onset)) %>% filter(migraine_onset>="2019-11-16") %>% select(patid,migraine_onset)
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  mutate(migraine_onset=as.character(migraine_onset)) %>% 
+  mutate(migraine_onset=str_sub(migraine_onset,1L,7L)) %>%
+  left_join(Dx_Months) %>% select(patid, N)
+
+
+# Nr Lines
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>%
+  group_by(patid) %>% count() %>% inner_join(groups)  %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(n))
+
+
+# % Time Treated
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(Elapsed=60-N+1) %>%
+  group_by(patid, Elapsed) %>% count() %>% ungroup() %>%
+  mutate(perc=n/Elapsed) %>%
+  inner_join(groups) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(perc))
+
+
+# Nr Molecules
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(n))
+
+
+# Nr Flows
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(patid) %>% filter(Treat!=lag(Treat)) %>% ungroup() %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups ) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(n))
+
+
+# Preventives 
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_Preventive <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="Preventive"|
+                                                                  Drugs_lookup$drug_group=="CGRP Injectable")&
+                                                                 !(Drugs_lookup$drug_class=="Muscle Relaxant")], collapse = "|"),")\\b")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(MIGUS24_Demographics) %>% filter(Month>=N)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(groups %>% select(patid)) %>%
+  filter(grepl(string_Preventive, Treat)) %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(n))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, Treat) %>% distinct() %>% filter(grepl(string_Preventive, Treat))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>%
+  group_by(patid) %>% count() %>%
+  inner_join(groups ) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(n))
+
+
+# Age
+Age <- fread("Source/MIGUS24 Demographics.txt")
+Age <- Age %>% select(patid, AGE)
+
+Age  %>% inner_join(groups ) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(AGE))
+
+
+# Mig Dxs
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+MIGUS24_Comorbidities_Extended_Dxs %>% inner_join(groups) %>%
+  ungroup() %>% group_by(`60`) %>% summarise(mean=mean(n))
+
+
+# Neurol
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, provcat) 
+  PROVCAT <- read_excel("Source/CDM_Data_Reference_Lookup_Tables_V81.xlsx", sheet="PROVCAT", skip = 5)
+PROVCAT <- PROVCAT %>% select(PROVCAT, DESCRIPTION)  %>% mutate(PROVCAT=as.numeric(PROVCAT))
+MIGUS24_Doses <- MIGUS24_Doses %>%  inner_join(PROVCAT %>% select(PROVCAT, DESCRIPTION) %>% distinct(), by=c("provcat"="PROVCAT"))
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(groups %>% select(patid))
+
+unique(MIGUS24_Doses$DESCRIPTION)
+
+specialties_drug_doses_alloc <- fread("Source/specialties_drug_doses_alloc.csv")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(specialties_drug_doses_alloc, by=c("DESCRIPTION"="original")) %>%
+  filter(final %in% c("GP", "IM", "NEURO", "OTHER PHYSICIAN") )
+  
+
+groups %>% 
+  left_join(MIGUS24_Doses %>% filter(final=="NEURO") %>% select(patid) %>% distinct() %>% mutate(NEURO="NEURO")) %>%
+  group_by(`60`, NEURO) %>% count() %>% spread(key=NEURO, value=n) %>%
+  mutate(perc=NEURO/(NEURO+`<NA>`))
+
+
+
+groups %>% 
+  left_join(MIGUS24_Doses) %>%
+  group_by(`60`, final) %>% count() %>% drop_na() %>%
+  spread(key=final, value=n) %>%
+  mutate(perc=NEURO/(NEURO+IM+GP+`OTHER PHYSICIAN`))
+
+# ---------
+# Flows last 12 months for preventive past highest box m48 ------
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- Mod_Sev %>% select(patid) %>% inner_join(MIGUS24_Drug_Histories_Extended_NoComorbs)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+sum(MIGUS24_Drug_Histories_Extended_NoComorbs$weight) # 12768773
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+
+Pats_months <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(-Treat) 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+  left_join(Drug_formulary, by=c("Treat"="drug_id")) %>% select(-Treat) %>% distinct()
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(exp=1) %>% spread(key=drug_group, value=exp)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs[is.na(MIGUS24_Drug_Histories_Extended_NoComorbs)] <- 0
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+  arrange(patid, Month) %>% group_by(patid) %>%
+  mutate(`CGRP Injectable`=cumsum(`CGRP Injectable`)) %>% mutate(`CGRP Injectable`=ifelse(`CGRP Injectable`==0,0,1)) %>%
+  mutate(`CGRP Nasal`=cumsum(`CGRP Nasal`)) %>% mutate(`CGRP Nasal`=ifelse(`CGRP Nasal`==0,0,1)) %>%
+  mutate(`CGRP Oral`=cumsum(`CGRP Oral`)) %>% mutate(`CGRP Oral`=ifelse(`CGRP Oral`==0,0,1)) %>%
+  mutate(Preventive=cumsum(Preventive)) %>% mutate(Preventive=ifelse(Preventive==0,0,1)) %>%
+  mutate(Symptomatic=cumsum(Symptomatic)) %>%  mutate(Symptomatic=ifelse(Symptomatic==0,0,1)) %>%
+  mutate(Triptans=cumsum(Triptans)) %>% mutate(Triptans=ifelse(Triptans==0,0,1))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(Box=ifelse(`CGRP Oral`==1, "CGRP_Oral",
+                                                                ifelse(`CGRP Injectable`==1, "CGRP_Inj",
+                                                                       ifelse(Preventive==1, "Prev",
+                                                                              ifelse(Triptans==1, "Triptan",
+                                                                                     ifelse(Symptomatic==1, "Sympt", "none"))))))
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- data.frame(Pats_months %>% 
+  left_join(MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, weight, Month, Box)) %>%
+  arrange(patid, Month) %>%
+  group_by(patid) %>% fill(Box) %>%
+    mutate(Box=ifelse(is.na(Box), "Lapsed", Box)))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Month %in% c(12,24,36,48,60)) %>%
+  spread(key=Month, value=Box)
+
+
+fwrite(MIGUS24_Drug_Histories_Extended_NoComorbs, "Highest_Cumm_Box_Years_MIGUS.txt")
+
+fwrite(MIGUS24_Drug_Histories_Extended_NoComorbs, "Highest_Cumm_Box_Years_MIGUS.csv")
+
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`60`=ifelse(`60`=="Sympt", "Triptan", `60`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`48`=ifelse(`48`=="Sympt", "Triptan", `48`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`36`=ifelse(`36`=="Sympt", "Triptan", `36`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`24`=ifelse(`24`=="Sympt", "Triptan", `24`))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(`12`=ifelse(`12`=="Sympt", "Triptan", `12`))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`60`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`48`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`36`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`24`) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`12`) %>% summarise(n=sum(weight))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`48`, `60`) %>% summarise(n=sum(weight)) 
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`36`, `48`) %>% summarise(n=sum(weight)) 
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`24`, `36`) %>% summarise(n=sum(weight)) 
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(`12`, `24`) %>% summarise(n=sum(weight)) 
+
+
+groups <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(patid, `48`)  
+
+
+MIGUS24_Flows_Long <- fread("Source/MIGUS24 Flows_Long.txt")
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% select(patient, weight, p1, p2, d1, d2, s1,s2, flow, stops, starts, re_starts)
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% inner_join(groups %>% filter(`48`=="Prev"), by=c("patient"="patid"))
+
+MIGUS24_Flows_Long %>% select(patient, weight) %>% distinct() %>% summarise(tot=sum(weight))  # 7457204
+
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% filter(p1>=48) %>% filter(stops!=1) %>% select(-stops, starts, re_starts, `48`) %>% filter(flow==1) %>% select(-flow)
+
+MIGUS24_Flows_Long %>% select(patient, weight) %>% distinct() %>% summarise(tot=sum(weight))  # 6827262 # 0.9155257
+
+data <- MIGUS24_Flows_Long
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+unique(Drug_formulary$drug_group)
+string_CGRP_Oral <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Oral"], collapse = "|"),")\\b")
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+
+string_Acute <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Triptans"|Drug_formulary$drug_group=="Symptomatic"], collapse = "|"),")\\b")
+string_Preventative <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+
+
+# Oral CGRP Therapy class (O) - flags
+data <- data[, Oral_CGRP_d1 := unlist(lapply(d1, function(x) ifelse(str_detect(x, string_CGRP_Oral), str_c(unlist(str_extract_all(x, string_CGRP_Oral)), collapse = ","),"")))]
+data <- data[, Oral_CGRP_d2 := unlist(lapply(d2, function(x) ifelse(str_detect(x, string_CGRP_Oral), str_c(unlist(str_extract_all(x, string_CGRP_Oral)), collapse = ","),"")))]
+data <- data[, nr_Oral_CGRP_d1 := unlist(lapply(d1, function(x) mapply(function (x) sum(str_detect(x, string_CGRP_Oral)*1), str_split(x,","))))]
+data <- data[, nr_Oral_CGRP_d2 := unlist(lapply(d2, function(x) mapply(function (x) sum(str_detect(x, string_CGRP_Oral)*1), str_split(x,","))))]
+data <- data[, nr_Oral_CGRP_Unq_d1d2 := .(apply(.SD, 1, function(x) sum((unique(unlist(str_split(str_c(x,","),","))) != "")*1))), ,.SDcols = c("Oral_CGRP_d1","Oral_CGRP_d2")] 
+data <- data[, Oral_CGRP_flow_type := ifelse(nr_Oral_CGRP_d2 < nr_Oral_CGRP_d1 & nr_Oral_CGRP_Unq_d1d2 > nr_Oral_CGRP_d1, "D+S", 
+                                             ifelse(nr_Oral_CGRP_d2 > nr_Oral_CGRP_d1 & nr_Oral_CGRP_Unq_d1d2 > nr_Oral_CGRP_d2, "A+S",
+                                                    ifelse(nr_Oral_CGRP_d2 < nr_Oral_CGRP_d1, "D", 
+                                                           ifelse(nr_Oral_CGRP_d2 > nr_Oral_CGRP_d1, "A", 
+                                                                  ifelse(nr_Oral_CGRP_d2 == nr_Oral_CGRP_d1 & Oral_CGRP_d2 != Oral_CGRP_d1, "S","-")))))] 
+
+
+# Injectable CGRP Therapy class (I) - flags
+data <- data[, Injectable_CGRP_d1 := unlist(lapply(d1, function(x) ifelse(str_detect(x,string_CGRP_Inj),str_c(unlist(str_extract_all(x,string_CGRP_Inj)),collapse = ","),"")))]
+data <- data[, Injectable_CGRP_d2 := unlist(lapply(d2, function(x) ifelse(str_detect(x,string_CGRP_Inj),str_c(unlist(str_extract_all(x,string_CGRP_Inj)),collapse = ","),"")))]
+data <- data[, nr_Injectable_CGRP_d1 := unlist(lapply(d1, function(x) mapply(function (x) sum(str_detect(x, string_CGRP_Inj)*1), str_split(x,","))))]
+data <- data[, nr_Injectable_CGRP_d2 := unlist(lapply(d2, function(x) mapply(function (x) sum(str_detect(x, string_CGRP_Inj)*1), str_split(x,","))))]
+data <- data[, nr_Injectable_CGRP_Unq_d1d2 := .(apply(.SD, 1, function(x) sum((unique(unlist(str_split(str_c(x,","),","))) != "")*1))), ,.SDcols = c("Injectable_CGRP_d1","Injectable_CGRP_d2")] 
+data <- data[, Injectable_CGRP_flow_type := ifelse(nr_Injectable_CGRP_d2 < nr_Injectable_CGRP_d1 & nr_Injectable_CGRP_Unq_d1d2 > nr_Injectable_CGRP_d1, "D+S", 
+                                                   ifelse(nr_Injectable_CGRP_d2 > nr_Injectable_CGRP_d1 & nr_Injectable_CGRP_Unq_d1d2 > nr_Injectable_CGRP_d2, "A+S",
+                                                          ifelse(nr_Injectable_CGRP_d2 < nr_Injectable_CGRP_d1, "D", 
+                                                                 ifelse(nr_Injectable_CGRP_d2 > nr_Injectable_CGRP_d1, "A", 
+                                                                        ifelse(nr_Injectable_CGRP_d2 == nr_Injectable_CGRP_d1 & Injectable_CGRP_d2 != Injectable_CGRP_d1, "S","-")))))]
+
+
+# Acute Therapy class (A) - flags
+data <- data[, Acute_d1 := unlist(lapply(d1, function(x) ifelse(str_detect(x,string_Acute),str_c(unlist(str_extract_all(x,string_Acute)),collapse = ","),"")))]
+data <- data[, Acute_d2 := unlist(lapply(d2, function(x) ifelse(str_detect(x,string_Acute),str_c(unlist(str_extract_all(x,string_Acute)),collapse = ","),"")))]
+data <- data[, nr_Acute_d1 := unlist(lapply(d1, function(x) mapply(function (x) sum(str_detect(x, string_Acute)*1), str_split(x,","))))]
+data <- data[, nr_Acute_d2 := unlist(lapply(d2, function(x) mapply(function (x) sum(str_detect(x, string_Acute)*1), str_split(x,","))))]
+data <- data[, nr_Acute_Unq_d1d2 := .(apply(.SD, 1, function(x) sum((unique(unlist(str_split(str_c(x,","),","))) != "")*1))), ,.SDcols = c("Acute_d1","Acute_d2")] 
+data <- data[, Acute_flow_type := ifelse(nr_Acute_d2 < nr_Acute_d1 & nr_Acute_Unq_d1d2 > nr_Acute_d1, "D+S", 
+                                         ifelse(nr_Acute_d2 > nr_Acute_d1 & nr_Acute_Unq_d1d2 > nr_Acute_d2, "A+S",
+                                                ifelse(nr_Acute_d2 < nr_Acute_d1, "D", 
+                                                       ifelse(nr_Acute_d2 > nr_Acute_d1, "A", 
+                                                              ifelse(nr_Acute_d2 == nr_Acute_d1 & Acute_d2 != Acute_d1, "S","-")))))]
+
+
+
+
+
+# Preventative Therapy class (p) - flags
+data <- data[, Preventative_d1 := unlist(lapply(d1, function(x) ifelse(str_detect(x,string_Preventative),str_c(unlist(str_extract_all(x,string_Preventative)),collapse = ","),"")))]
+data <- data[, Preventative_d2 := unlist(lapply(d2, function(x) ifelse(str_detect(x,string_Preventative),str_c(unlist(str_extract_all(x,string_Preventative)),collapse = ","),"")))]
+data <- data[, nr_Preventative_d1 := unlist(lapply(d1, function(x) mapply(function (x) sum(str_detect(x, string_Preventative)*1), str_split(x,","))))]
+data <- data[, nr_Preventative_d2 := unlist(lapply(d2, function(x) mapply(function (x) sum(str_detect(x, string_Preventative)*1), str_split(x,","))))]
+data <- data[, nr_Preventative_Unq_d1d2 := .(apply(.SD, 1, function(x) sum((unique(unlist(str_split(str_c(x,","),","))) != "")*1))), ,.SDcols = c("Preventative_d1","Preventative_d2")] 
+data <- data[, Preventative_flow_type := ifelse(nr_Preventative_d2 < nr_Preventative_d1 & nr_Preventative_Unq_d1d2 > nr_Preventative_d1, "D+S", 
+                                                ifelse(nr_Preventative_d2 > nr_Preventative_d1 & nr_Preventative_Unq_d1d2 > nr_Preventative_d2, "A+S",
+                                                       ifelse(nr_Preventative_d2 < nr_Preventative_d1, "D", 
+                                                              ifelse(nr_Preventative_d2 > nr_Preventative_d1, "A", 
+                                                                     ifelse(nr_Preventative_d2 == nr_Preventative_d1 & Preventative_d2 != Preventative_d1, "S","-")))))]
+
+
+
+
+
+data %>% select(patient, weight, Preventative_flow_type) %>% distinct() %>% group_by(Preventative_flow_type) %>% summarise(n=sum(weight)/7457204)
+data %>% select(patient, weight, Oral_CGRP_flow_type) %>% distinct() %>% group_by(Oral_CGRP_flow_type) %>% summarise(n=sum(weight)/7457204)
+data %>% select(patient, weight, Injectable_CGRP_flow_type) %>% distinct() %>% group_by(Injectable_CGRP_flow_type) %>% summarise(n=sum(weight)/7457204)
+data %>% select(patient, weight, Acute_flow_type) %>% distinct() %>% group_by(Acute_flow_type) %>% summarise(n=sum(weight)/7457204)
+
+
+# -----------------
+# 2 box model Rimegepant flows drugs tried up until 1st Rime ---------------------
+
+groups <- fread("Source/Groups_Up_to_First_Preventive.txt")
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- groups %>% select(patid) %>% inner_join(MIGUS24_Doses)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(generic=="Rimegepant" & status != "G") %>% select(-c(provider, provcat, status, code, NPI, generic, drug_id, drug_class, drug_group))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt >= "2021-11-16"&from_dt <= "2023-11-16") %>% filter(days_sup!="")
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% arrange(patid, from_dt) 
+
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid) %>% mutate(elapsed=as.numeric(lead(from_dt)-from_dt))
+MIGUS24_Doses <- MIGUS24_Doses %>% drop_na()
+
+data.frame(MIGUS24_Doses) 
+
+#MIGUS24_Doses <- MIGUS24_Doses %>% filter(elapsed <= 92)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(rate=30*(as.numeric(qty)/elapsed))
+
+
+pats_m48 <- MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  filter(from_dt<="2022-11-16") %>%
+  group_by(patid) %>% filter(from_dt==max(from_dt)) %>%  ungroup() %>%
+  mutate(diff=as.numeric(as.Date("2022-11-16")-from_dt)) %>% 
+  filter(diff<=92) %>% select(patid, weight, rate) %>% rename("m48"="rate")
+
+
+M48_to_m60 <- MIGUS24_Doses %>% mutate(rate=ifelse(rate>=13, "Prev", "Acute")) %>% 
+  #filter(from_dt<="2022-06-16") %>%
+  group_by(patid) %>% filter(from_dt==max(from_dt)) %>%  ungroup() %>%
+  mutate(diff=as.numeric(as.Date("2023-11-16")-from_dt)) %>% 
+  filter(diff<=92) %>%
+  full_join(pats_m48) %>%  rename("m60"="rate") %>%
+  select(patid, weight, m48, m60)
+
+
+M48_to_m60 <- M48_to_m60 %>% filter(is.na(m48))
+
+unique(M48_to_m60$weight)
+
+
+Drugs_lookup <- fread("Source/Drugs_lookup.txt")
+unique(Drugs_lookup$drug_group)
+string_CGRP_Inj <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Injectable")], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drugs_lookup$drug_id[(Drugs_lookup$drug_group=="CGRP Oral")], collapse = "|"),")\\b")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(M48_to_m60 %>% select(patid))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>%  select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, Month) %>% group_by(patid)
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(patid) %>% 
+  slice(if(any(grepl("136",Treat))) 1:which.max(grepl("136",Treat)) else row_number())   
+
+
+ 
+# MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% 
+#   filter(grepl(string_CGRP_Inj, lead(Treat)) |  grepl(string_CGRP_Oral, lead(Treat))) %>%
+#   group_by(patid) %>% filter(Month==min(Month))
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(-c(weight, Month)) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T ) 
+
+
+M48_to_m60 %>% group_by(m60) %>% summarise(n=sum(weight))
+
+# 1 Acute 17373.
+# 2 Prev   7586.
+
+data.frame(M48_to_m60 %>% mutate(patid=as.character(patid)) %>%
+  left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%  distinct() %>%
+  left_join(Drugs_lookup %>% select(drug_id, drug_group) %>% mutate(drug_id=as.character(drug_id)), by=c("Treat"="drug_id")) %>%
+  select(patid, weight, m60, drug_group) %>% distinct() %>%
+  group_by(m60, drug_group) %>% summarise(n=sum(weight)) %>% mutate(n=ifelse(m60=="Acute", n/17373, n/7586)) %>%
+  spread(key=m60, value=n))
+
+
+# -------
+    
+
+# Quantify Acute vs preventive volume, different options ---------
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, CV, psychiatric, epileptic) 
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+unique(MIGUS24_Doses$drug_class) 
+
+# MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_class!="Muscle Relaxant"&drug_class!="SNRI"&
+#                                             drug_class!="SSRI"&drug_class!="Antipsychotic"&drug_class!="Tricyclic"&
+#                                             drug_class!="Calcium Blocker"&drug_class!="Beta Blocker"&drug_class!="Cardiovascular")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_group!="Preventive" | generic %in% c("Propranolol", "Timolol", "Topiramate", "Botulinum Toxin")|  drug_class=="Muscle Relaxant" | drug_class=="Antiepileptic") 
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt > "2022-11-15"&from_dt<="2023-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, drug_group) %>% distinct() %>% mutate(exp=1) %>% spread(key=drug_group, value=exp)
+
+MIGUS24_Doses[is.na(MIGUS24_Doses)] <- 0
+
+Types <- MIGUS24_Doses %>%
+  mutate(Prev=ifelse(`CGRP Injectable`==1|Preventive==1,1,0)) %>%
+    mutate(Acute=ifelse(`CGRP Nasal`==1|`CGRP Oral`==1|Symptomatic==1|Triptans==1,1,0)) %>%
+ mutate(Type=ifelse(Prev==1&Acute==1, "Both",
+                    ifelse(Prev==1,"Prev", "Acute"))) %>% select(patid, weight, Type)
+
+
+Types %>% group_by(Type) %>% summarise(n=sum(weight))
+
+
+
+
+# Volume
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+
+# MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_class!="Muscle Relaxant"&drug_class!="SNRI"&
+#                                             drug_class!="SSRI"&drug_class!="Antipsychotic"&drug_class!="Tricyclic"&
+#                                             drug_class!="Calcium Blocker"&drug_class!="Beta Blocker"&drug_class!="Cardiovascular")
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_group!="Preventive" | generic %in% c("Propranolol", "Timolol", "Topiramate", "Botulinum Toxin")| drug_class=="Muscle Relaxant" | drug_class=="Antiepileptic")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt > "2022-11-15"&from_dt<="2023-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, days_sup, drug_group)
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, drug_group) %>% summarise(volume=sum(weight*days_sup))
+MIGUS24_Doses <- MIGUS24_Doses %>% ungroup() %>% mutate(vol_type=ifelse(drug_group %in% c("Preventive" , "CGRP Injectable"), "Prev", "Acute" )) %>%
+  select(patid, volume, vol_type) %>% group_by(patid, vol_type) %>% summarise(volume=sum(volume))
+
+Types %>% inner_join(MIGUS24_Doses) %>% filter(weight!=1) %>% inner_join(Mod_Sev) %>%
+  group_by(Type, vol_type) %>% summarise(volume=sum(volume))
+
+
+
+# Scripts
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+
+# MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_class!="Muscle Relaxant"&drug_class!="SNRI"&
+#                                             drug_class!="SSRI"&drug_class!="Antipsychotic"&drug_class!="Tricyclic"&
+#                                             drug_class!="Calcium Blocker"&drug_class!="Beta Blocker"&drug_class!="Cardiovascular")
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_group!="Preventive" | generic %in% c("Propranolol", "Timolol", "Topiramate", "Botulinum Toxin") | drug_class=="Muscle Relaxant" | drug_class=="Antiepileptic")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt > "2022-11-15"&from_dt<="2023-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, days_sup, drug_group)
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, drug_group) %>% count()
+MIGUS24_Doses <- MIGUS24_Doses %>% ungroup() %>% mutate(vol_type=ifelse(drug_group %in% c("Preventive" , "CGRP Injectable"), "Prev", "Acute" )) %>%
+  select(patid, n, vol_type) %>% group_by(patid, vol_type) %>% summarise(volume=sum(n))
+
+Types %>% inner_join(MIGUS24_Doses) %>% filter(weight!=1) %>% inner_join(Mod_Sev) %>%
+  group_by(Type, vol_type) %>% summarise(volume=sum(volume))
+
+# ------------------
+# Waterfall last year vs last month ---------
+
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+unique(Mod_Sev$group)
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt") # 21292150
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, weight, CV, psychiatric, epileptic) 
+sum(MIGUS24_Demographics$weight)
+
+Mod_Sev %>% inner_join(MIGUS24_Demographics) %>% summarise(n=sum(weight)) # 13061689
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+sum(MIGUS24_Drug_Histories_Extended_NoComorbs$weight) # 21292150
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% inner_join(Mod_Sev)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Month>=60) %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  select(patid, weight, drug_group) %>% distinct() %>% mutate(exp=1) %>% spread(key=drug_group, value=exp)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs[is.na(MIGUS24_Drug_Histories_Extended_NoComorbs)] <- 0
+
+MIGUS24_Drug_Histories_Extended_NoComorbs %>% mutate(Prev=ifelse(`CGRP Injectable`==1|Preventive==1, 1, 0)) %>%
+  mutate(Acute=ifelse(`CGRP Oral`==1|`CGRP Nasal`==1|Triptans==1|Symptomatic==1, 1, 0)) %>%
+  mutate(group=ifelse(Prev==1&Acute==1, "Both",
+                       ifelse(Prev==1, "Prev", "Acute"))) %>%
+  group_by(group) %>% summarise(n=sum(weight))
+
+
+# --------
+# Excluding preventive drugs for patients with no migraine-specific drug ever ---------
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, CV, psychiatric, epileptic) 
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+unique(MIGUS24_Doses$drug_class) 
+   
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0)
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt > "2022-11-15"&from_dt<="2023-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, drug_group) %>% distinct() %>% mutate(exp=1) %>% spread(key=drug_group, value=exp)
+
+MIGUS24_Doses[is.na(MIGUS24_Doses)] <- 0
+
+Types <- MIGUS24_Doses %>%
+  mutate(Prev=ifelse(`CGRP Injectable`==1|Preventive==1,1,0)) %>%
+    mutate(Acute=ifelse(`CGRP Nasal`==1|`CGRP Oral`==1|Symptomatic==1|Triptans==1,1,0)) %>%
+ mutate(Type=ifelse(Prev==1&Acute==1, "Both",
+                    ifelse(Prev==1,"Prev", "Acute"))) %>% select(patid, weight, Type)
+
+
+Types %>% group_by(Type) %>% summarise(n=sum(weight))
+
+
+# Volume
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt > "2022-11-15"&from_dt<="2023-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, days_sup, drug_group)
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, drug_group) %>% summarise(volume=sum(weight*days_sup))
+MIGUS24_Doses <- MIGUS24_Doses %>% ungroup() %>% mutate(vol_type=ifelse(drug_group %in% c("Preventive" , "CGRP Injectable"), "Prev", "Acute" )) %>%
+  select(patid, volume, vol_type) %>% group_by(patid, vol_type) %>% summarise(volume=sum(volume))
+
+Types %>% inner_join(MIGUS24_Doses) %>% filter(weight!=1) %>% inner_join(Mod_Sev) %>%
+  group_by(Type, vol_type) %>% summarise(volume=sum(volume))
+
+
+
+
+
+# Scripts
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt > "2022-11-15"&from_dt<="2023-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, days_sup, drug_group)
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, drug_group) %>% count()
+MIGUS24_Doses <- MIGUS24_Doses %>% ungroup() %>% mutate(vol_type=ifelse(drug_group %in% c("Preventive" , "CGRP Injectable"), "Prev", "Acute" )) %>%
+  select(patid, n, vol_type) %>% group_by(patid, vol_type) %>% summarise(volume=sum(n))
+
+Types %>% inner_join(MIGUS24_Doses) %>% filter(weight!=1) %>% inner_join(Mod_Sev) %>%
+  group_by(Type, vol_type) %>% summarise(volume=sum(volume))
+
+
+
+# -------------
+# Acutes and Preventives drug usage Rimegepant patients  ------
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs  %>% select(patid, weight, Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% arrange(patid, Month)
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% inner_join(Mod_Sev)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)) , by=c("Treat"="drug_id")) %>%
+  left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0) %>% select(-c(MIG_spec, remove))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+Rimegepant_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat=="136") %>% select(patid) %>% distinct()
+
+
+# Drugs 
+
+Drugs_to_1st_Rime <- Rimegepant_pats %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  arrange(patid, Month) %>% group_by(patid) %>%
+  slice(if(any(grepl("136",Treat))) 1:which.max(grepl("136",Treat)) else row_number())   
+
+Drugs_to_1st_Rime %>% ungroup() %>% select(patid, weight) %>% distinct() %>% summarise(tot=sum(weight)) # 558548
+
+unique(Drugs_to_1st_Rime$drug_group)
+
+
+N_molecules <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136") %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+data.frame(Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136") %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>% group_by(n) %>% summarise(tot=sum(weight)))
+
+data.frame(Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136") %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>% summarise(mean=mean(n), sd=sd(n)))
+
+
+
+N_molecules_Acute <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("CGRP Oral", "Triptans", "Symptomatic")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+data.frame(Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("CGRP Oral", "Triptans", "Symptomatic")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>% group_by(n) %>% summarise(tot=sum(weight)))
+
+data.frame(Drugs_to_1st_Rime %>% filter(Treat!="-"& Treat!="136" & drug_group %in% c("CGRP Oral", "Triptans", "Symptomatic")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>% summarise(mean=mean(n), sd=sd(n)))
+
+
+
+N_molecules_Prev <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("Preventive", "CGRP Injectable")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+data.frame(Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("Preventive", "CGRP Injectable")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>% group_by(n) %>% summarise(tot=sum(weight)))
+
+data.frame(Drugs_to_1st_Rime %>% filter(Treat!="-"& Treat!="136" & drug_group %in% c("Preventive", "CGRP Injectable")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>% summarise(mean=mean(n), sd=sd(n)))
+
+
+
+
+# Flows
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% select(-drug_group) %>% distinct()
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) %>%
+  mutate(start=ifelse(Treat!="-"&lag(Treat)=="-",1,0))  %>% mutate(start=ifelse(is.na(start),0,start)) %>%
+  mutate(stop=ifelse(Treat=="-"&lag(Treat)!="-",1,0))  %>% mutate(stop=ifelse(is.na(stop),0,stop)) 
+
+
+N_flows <- Drugs_to_1st_Rime %>% filter(flow==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+data.frame(Drugs_to_1st_Rime %>% filter(flow==1) %>% group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% summarise(tot=sum(weight)))
+
+data.frame(Drugs_to_1st_Rime %>% filter(flow==1) %>% group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% ungroup() %>% summarise(mean=mean(n), sd=sd(n)))
+
+N_starts <- Drugs_to_1st_Rime %>% filter(start==1) %>% group_by(patid, weight) %>% count() %>% ungroup()
+
+data.frame(Drugs_to_1st_Rime %>% filter(start==1) %>% group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% summarise(tot=sum(weight)))
+
+data.frame(Drugs_to_1st_Rime %>% filter(start==1) %>% group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% ungroup() %>% summarise(mean=mean(n), sd=sd(n)))
+
+
+N_stops <- Drugs_to_1st_Rime %>% filter(stop==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+data.frame(Drugs_to_1st_Rime %>% filter(stop==1) %>% group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% summarise(tot=sum(weight)))
+
+data.frame(Drugs_to_1st_Rime %>% filter(stop==1) %>% group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% ungroup() %>% summarise(mean=mean(n), sd=sd(n)))
+
+
+# From CGRP INjectable vs From Preventive
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% select(-c(flow, start, stop))
+
+Inflow_source <- Drugs_to_1st_Rime %>% filter(!grepl("136", Treat)) %>% group_by(patid) %>% filter(Month==max(Month))
+
+Inflow_source <- Inflow_source %>% mutate(source=ifelse(grepl(string_CGRP_Inj, Treat), "Inj",
+                                       ifelse(grepl(string_Preventive, Treat), "Prev", "Other")))
+
+Inflow_source %>% group_by(source) %>% summarise(mean=mean(Month))
+
+Inflow_source <- Inflow_source %>% select(patid, source)
+
+Inflow_source %>% inner_join(N_molecules) %>% group_by(source) %>% summarise(n=mean(n))
+Inflow_source %>% inner_join(N_molecules_Acute) %>% group_by(source) %>% summarise(n=mean(n))
+Inflow_source %>% inner_join(N_molecules_Prev) %>% group_by(source) %>% summarise(n=mean(n))
+Inflow_source %>% inner_join(N_flows) %>% group_by(source) %>% summarise(n=mean(n))
+Inflow_source %>% inner_join(N_starts) %>% group_by(source) %>% summarise(n=mean(n))
+Inflow_source %>% inner_join(N_stops) %>% group_by(source) %>% summarise(n=mean(n))
+
+
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+Inflow_source %>% inner_join(MIGUS24_Comorbidities_Extended_Dxs %>% mutate(patid=as.character(patid))) %>% group_by(source) %>% summarise(n=mean(n))
+
+# --------
+# Rimegepant vs Atogepant --------
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+
+Rime_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl("136", Treat)) %>% select(patid) %>% distinct() %>% mutate(group="Rime")
+Ato_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(grepl("135", Treat)) %>% select(patid) %>% distinct() %>% mutate(group="Ato")
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs  %>% select(patid, weight, Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% arrange(patid, Month)
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% inner_join(Mod_Sev)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)) , by=c("Treat"="drug_id")) %>%
+  left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0) %>% select(-c(MIG_spec, remove))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+
+# Drugs 
+
+N_molecules <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-") %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+
+N_molecules_Acute <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-" & drug_group %in% c("CGRP Oral", "Triptans", "Symptomatic")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+N_molecules_Prev <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="-" & drug_group %in% c("Preventive", "CGRP Injectable")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+# Flows
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% select(-drug_group) %>% distinct()
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) %>%
+  mutate(start=ifelse(Treat!="-"&lag(Treat)=="-",1,0))  %>% mutate(start=ifelse(is.na(start),0,start)) %>%
+  mutate(stop=ifelse(Treat=="-"&lag(Treat)!="-",1,0))  %>% mutate(stop=ifelse(is.na(stop),0,stop)) 
+
+
+N_flows <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(flow==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+N_starts <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(start==1) %>% group_by(patid, weight) %>% count() %>% ungroup()
+
+N_stops <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(stop==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+
+Rime_pats <- Rime_pats %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid))
+
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_molecules) %>% summarise(mean=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_molecules) %>% summarise(mean=mean(n))
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_molecules_Acute) %>% summarise(mean=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_molecules_Acute) %>% summarise(mean=mean(n))
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_molecules_Prev) %>% summarise(mean=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_molecules_Prev) %>% summarise(mean=mean(n))
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_flows) %>% summarise(mean=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_flows) %>% summarise(mean=mean(n))
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_starts) %>% summarise(mean=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_starts) %>% summarise(mean=mean(n))
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_stops) %>% summarise(mean=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(N_stops) %>% summarise(mean=mean(n))
+
+
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+Rime_pats %>% mutate(patid=as.character(patid)) %>% inner_join(MIGUS24_Comorbidities_Extended_Dxs %>% mutate(patid=as.character(patid))) %>%  summarise(n=mean(n))
+Ato_pats %>% mutate(patid=as.character(patid)) %>% inner_join(MIGUS24_Comorbidities_Extended_Dxs %>% mutate(patid=as.character(patid))) %>% summarise(n=mean(n))
+
+
+# ---------
+# CGRP Injectable/Preventive Interaction preventives Bella --------
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+string_Acutes_flows <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Symptomatic"|
+                                                                     Drug_formulary$drug_group == "Triptans"|
+                                                                     Drug_formulary$drug_group == "CGRP Oral"], collapse = "|"),")\\b")
+string_Prevs_flows <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"|Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs  %>% select(patid, weight, Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% arrange(patid, Month)
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% inner_join(Mod_Sev)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)) , by=c("Treat"="drug_id")) %>%
+  left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0) %>% select(-c(MIG_spec, remove))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+Rimegepant_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat=="136") %>% 
+  select(patid, Month, weight) %>% distinct() %>% group_by(patid) %>% filter(Month==min(Month))
+
+sum(Rimegepant_pats$weight) # 558548
+
+Drugs_to_1st_Rime <- Rimegepant_pats %>% select(-Month) %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  arrange(patid, Month) %>% group_by(patid) %>%
+  slice(if(any(grepl("136",Treat))) 1:which.max(grepl("136",Treat)) else row_number())   
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% filter(!grepl("136", Treat))
+
+Drugs_to_1st_Rime %>% filter(grepl("CGRP", drug_group)) %>% select(patid, weight, Treat) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% summarise(tot=sum(weight))
+   
+
+
+
+Rimegepant_pats %>% 
+  left_join( Drugs_to_1st_Rime %>% filter(grepl("CGRP", drug_group)) %>% select(patid, weight, Treat) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()) %>%
+  mutate(n=ifelse(is.na(n),0,n)) %>% mutate(n=n+1) %>%
+  ungroup()  %>% # summarise(mean=mean(n))
+  ggplot(aes(Month, n)) +
+  geom_jitter(size=1, alpha=0.5, colour="deepskyblue4") +
+  geom_smooth(fill="firebrick", colour="deepskyblue4") +
+  theme_minimal() +
+  xlab("\n Month at which \n Rimegepant was Introduceed") +
+  ylab("# CGRP Line at which \n Rimegepant was Introduced \n")
+
+
+# Injectable/Preventive to Rimegepant 
+
+Injectable_pats <- Drugs_to_1st_Rime %>% filter(grepl(string_CGRP_Inj, Treat))  %>% group_by(patid) %>% 
+  filter(Month==min(Month)) %>% select(patid, Month, weight)
+
+
+Preventive_pats <- Drugs_to_1st_Rime %>% filter(grepl(string_Preventive, Treat))  %>% group_by(patid) %>% 
+  filter(Month==min(Month)) %>% select(patid, Month, weight)
+
+
+elapsed <- Injectable_pats %>% rename("First_Inj"="Month") %>% 
+  inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+  mutate(elapsed=First_Rime-First_Inj) %>% ungroup() # %>% summarise(mean=mean(elapsed))  # 24.9
+   
+
+elapsed_prev <- Preventive_pats %>% rename("First_Prev"="Month") %>% 
+  inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+  mutate(elapsed=First_Rime-First_Prev) %>% ungroup() # %>% summarise(mean=mean(elapsed))  # 36
+   
+
+Drugs_to_1st_Rime_flows <- Drugs_to_1st_Rime %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+Drugs_to_1st_Rime_flows <- Drugs_to_1st_Rime_flows %>% select(-drug_group) %>% distinct()
+
+Drugs_to_1st_Rime_flows <- Drugs_to_1st_Rime_flows %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) 
+
+
+flows_between <- Drugs_to_1st_Rime_flows %>%
+    inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+    inner_join(Injectable_pats %>% rename("First_Inj"="Month")) %>%
+    filter(Month>First_Inj & Month<First_Rime) %>% distinct() %>%
+  filter(flow==1) %>% group_by(patid, weight) %>% count()
+
+
+flows_between_prev <- Drugs_to_1st_Rime_flows %>%
+    inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+    inner_join(Preventive_pats %>% rename("First_Prev"="Month")) %>%
+    filter(Month>First_Prev & Month<First_Rime) %>% distinct() %>%
+  filter(flow==1) %>% group_by(patid, weight) %>% count()
+
+mean(flows_between$n)
+mean(flows_between_prev$n)
+
+data.frame(elapsed %>% select(patid, weight, elapsed) %>%
+  left_join(flows_between) %>% mutate(n=ifelse(is.na(n),0,n)) %>% # summarise(mean=mean(n))
+  group_by(n) %>% summarise(tot=sum(weight)))
+
+
+data.frame(elapsed_prev %>% select(patid, weight, elapsed) %>%
+  left_join(flows_between_prev) %>% mutate(n=ifelse(is.na(n),0,n)) %>% # summarise(mean=mean(n))
+  group_by(n) %>% summarise(tot=sum(weight)))
+
+elapsed %>% select(patid, weight, elapsed) %>%
+  left_join(flows_between) %>% mutate(n=ifelse(is.na(n),0,n)) %>% 
+  ggplot(aes(elapsed, n)) +
+  geom_jitter(size=1, alpha=0.5, colour="deepskyblue4") +
+   geom_smooth(fill="firebrick", colour="deepskyblue4") +
+  theme_minimal() +
+  xlab("\n # Elpased Months From \n 1st CGRP Injectable & 1st Rimegepant") +
+  ylab("# Flows \n 1st CGRP Injectable & 1st Rimegepant \n")
+
+
+elapsed_prev %>% select(patid, weight, elapsed) %>%
+  left_join(flows_between_prev) %>% mutate(n=ifelse(is.na(n),0,n)) %>% 
+  ggplot(aes(elapsed, n)) +
+  geom_jitter(size=1, alpha=0.5, colour="deepskyblue4") +
+   geom_smooth(fill="firebrick", colour="deepskyblue4") +
+  theme_minimal() +
+  xlab("\n # Elpased Months From \n 1st Preventive & 1st Rimegepant") +
+  ylab("# Flows \n 1st Preventive & 1st Rimegepant \n")
+
+
+
+flows <- Drugs_to_1st_Rime_flows
+
+flows <- separate_rows(flows, Treat, sep = ",", convert=T )
+
+pat_months <- flows %>% select(patid, weight, Month) %>% distinct()
+
+flows_acute <- pat_months %>% left_join(flows %>% filter(grepl(string_Acutes_flows, Treat)|Treat=="-")) %>% 
+  mutate(Treat=ifelse(is.na(Treat),"-", Treat)) %>% select(-flow)
+
+flows_acute <- flows_acute %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+flows_acute <- flows_acute %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) 
+
+flows_prev <- pat_months %>% left_join(flows %>% filter(grepl(string_Prevs_flows, Treat)|Treat=="-")) %>% 
+  mutate(Treat=ifelse(is.na(Treat),"-", Treat)) %>% select(-flow)
+
+flows_prev <- flows_prev %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+flows_prev <- flows_prev %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) 
+
+
+
+flows_between_inj <- flows_acute %>%
+    inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+    inner_join(Injectable_pats %>% rename("First_Inj"="Month")) %>%
+    filter(Month>First_Inj & Month<First_Rime) %>% distinct() %>%
+  filter(flow==1) %>% group_by(patid, weight) %>% count()
+
+mean(flows_between_inj$n)
+
+flows_between_inj <- flows_prev %>%
+    inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+    inner_join(Injectable_pats %>% rename("First_Inj"="Month")) %>%
+    filter(Month>First_Inj & Month<First_Rime) %>% distinct() %>%
+  filter(flow==1) %>% group_by(patid, weight) %>% count()
+
+mean(flows_between_inj$n)
+
+
+
+flows_between_prev <- flows_acute %>%
+    inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+    inner_join(Preventive_pats %>% rename("First_Prev"="Month")) %>%
+    filter(Month>First_Prev & Month<First_Rime) %>% distinct() %>%
+  filter(flow==1) %>% group_by(patid, weight) %>% count()
+
+mean(flows_between_prev$n)
+
+flows_between_inj <- flows_prev %>%
+    inner_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+    inner_join(Preventive_pats %>% rename("First_Prev"="Month")) %>%
+    filter(Month>First_Prev & Month<First_Rime) %>% distinct() %>%
+  filter(flow==1) %>% group_by(patid, weight) %>% count()
+
+mean(flows_between_inj$n)
+
+
+
+
+
+
+# Max Rank Up to first Riemgepant year over year
+
+exp_df <- Drugs_to_1st_Rime %>% filter(Treat!="-") %>% 
+  left_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+  select(-c(Treat,Month)) %>% distinct() %>% mutate(exp=1) %>%
+  spread(key=drug_group, value=exp)
+
+exp_df[is.na(exp_df)] <- 0
+
+exp_df <- exp_df %>%
+  mutate(First_Rime=ifelse(First_Rime>=49, 5,
+                           ifelse(First_Rime>=37,4,
+                                  ifelse(First_Rime>=25,3,
+                                         ifelse(First_Rime>=13,2,1)))))
+
+exp_df %>% group_by(First_Rime, Preventive) %>% summarise(n=sum(weight)) %>% 
+  spread(key=Preventive, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, `CGRP Injectable`) %>% summarise(n=sum(weight)) %>% 
+  spread(key=`CGRP Injectable`, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, `CGRP Oral`) %>% summarise(n=sum(weight)) %>% 
+  spread(key=`CGRP Oral`, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, Triptans) %>% summarise(n=sum(weight)) %>% 
+  spread(key=Triptans, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, Symptomatic) %>% summarise(n=sum(weight)) %>% 
+  spread(key=Symptomatic, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+
+exp_df %>% mutate(group=ifelse(`CGRP Oral`==1,"Oral",
+                               ifelse(`CGRP Injectable`==1, "Inj",
+                                      ifelse(Preventive==1, "Prev",
+                                             ifelse(Triptans==1,"Triptan", 
+                                                    ifelse(Symptomatic==1, "Sympt", NA)))))) %>%
+  group_by(First_Rime, group) %>% summarise(n=sum(weight)) %>%
+  spread(key=First_Rime, value=n)
+
+
+exp_df <- exp_df %>% mutate(group=ifelse(`CGRP Oral`==1,"Oral",
+                               ifelse(`CGRP Injectable`==1, "Inj",
+                                      ifelse(Preventive==1, "Prev",
+                                             ifelse(Triptans==1,"Triptan", 
+                                                    ifelse(Symptomatic==1, "Sympt", NA)))))) 
+
+
+
+
+
+
+# KPIS based on max rank cumulative up to first rimegepant
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs  %>% select(patid, weight, Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% arrange(patid, Month)
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% inner_join(Mod_Sev)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)) , by=c("Treat"="drug_id")) %>%
+  left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0) %>% select(-c(MIG_spec, remove))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+Rimegepant_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat=="136") %>% select(patid) %>% distinct()
+
+
+# Drugs 
+
+Drugs_to_1st_Rime <- Rimegepant_pats %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  arrange(patid, Month) %>% group_by(patid) %>%
+  slice(if(any(grepl("136",Treat))) 1:which.max(grepl("136",Treat)) else row_number())   
+
+Drugs_to_1st_Rime %>% ungroup() %>% select(patid, weight) %>% distinct() %>% summarise(tot=sum(weight)) # 558548
+
+unique(Drugs_to_1st_Rime$drug_group)
+
+
+N_molecules <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136") %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+N_molecules_Acute <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("CGRP Oral", "Triptans", "Symptomatic")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+N_molecules_Prev <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("Preventive", "CGRP Injectable")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+
+# Flows
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% select(-drug_group) %>% distinct()
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) %>%
+  mutate(start=ifelse(Treat!="-"&lag(Treat)=="-",1,0))  %>% mutate(start=ifelse(is.na(start),0,start)) %>%
+  mutate(stop=ifelse(Treat=="-"&lag(Treat)!="-",1,0))  %>% mutate(stop=ifelse(is.na(stop),0,stop)) 
+
+N_flows <- Drugs_to_1st_Rime %>% filter(flow==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+N_starts <- Drugs_to_1st_Rime %>% filter(start==1) %>% group_by(patid, weight) %>% count() %>% ungroup()
+
+N_stops <- Drugs_to_1st_Rime %>% filter(stop==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+
+exp_df %>% filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_molecules) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_molecules_Acute) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_molecules_Prev) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_flows) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_starts) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>%  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_stops) %>% group_by(group) %>% summarise(n=mean(n))
+
+
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+exp_df %>% filter(First_Rime==5) %>% select(patid, group) %>% inner_join(MIGUS24_Comorbidities_Extended_Dxs %>% mutate(patid=as.character(patid))) %>% group_by(group) %>% summarise(n=mean(n))
+
+
+# Switch Mab to Rime vs Add ON
+
+
+
+
+
+# ---------
+
+# Riemgepant patients and physician Acute vs Start  ------- 
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+RIME_pats <- MIGUS24_Doses %>% filter(generic=="Rimegepant") %>% select(patid) %>% distinct()
+MIGUS24_Doses <- RIME_pats %>% left_join(MIGUS24_Doses) %>% filter(generic=="Rimegepant")
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+range(MIGUS24_Doses$from_dt)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt >= "2022-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% arrange(patid, generic, from_dt) 
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, generic) %>% mutate(elapsed=as.numeric(lead(from_dt)-from_dt))
+MIGUS24_Doses <- MIGUS24_Doses %>% drop_na()
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(elapsed <= 92)
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(rate=30*(as.numeric(qty)/elapsed))
+
+means_groups <- MIGUS24_Doses %>% mutate(rate=ifelse(elapsed==0, 0, rate)) %>%
+  group_by(patid, weight, generic) %>% summarise(mean=mean(rate)) %>%
+  mutate(mean=ifelse(mean>=13, "Prev", "Acute")) %>% ungroup() %>% select(-generic)
+
+means_groups %>% group_by(mean) %>% summarise(n=sum(weight))
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(generic=="Rimegepant") %>% select(patid, provider, provcat) 
+
+PROVCAT <- read_excel("Source/CDM_Data_Reference_Lookup_Tables_V81.xlsx", sheet="PROVCAT", skip = 5)
+PROVCAT <- PROVCAT %>% select(PROVCAT, DESCRIPTION)  %>% mutate(PROVCAT=as.numeric(PROVCAT))
+MIGUS24_Doses <- MIGUS24_Doses %>%  inner_join(PROVCAT %>% select(PROVCAT, DESCRIPTION) %>% distinct(), by=c("provcat"="PROVCAT"))
+
+specialties_drug_doses_alloc <- fread("Source/specialties_drug_doses_alloc.csv")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(specialties_drug_doses_alloc, by=c("DESCRIPTION"="original")) %>%
+  filter(final %in% c("GP", "IM", "NEURO", "OTHER PHYSICIAN") ) %>% select(patid, provider)
+  
+MIGUS24_Doses <- MIGUS24_Doses %>% distinct()
+
+
+MIGUS24_Doses %>% inner_join(means_groups) %>% 
+  select(provider, mean) %>% distinct() %>%
+  mutate(exp=1) %>% spread(key=mean, value=exp) %>% 
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Prev=ifelse(is.na(Prev),0,Prev)) %>%
+  mutate(group=ifelse(Acute==1&Prev==1, "Both",
+                      ifelse(Prev==1,"Prev", "Acute"))) %>% group_by(group) %>% count()
+
+
+
+physician_groups <-  MIGUS24_Doses %>% inner_join(means_groups) %>% select(provider, mean) %>% distinct() %>%
+  mutate(exp=1) %>% spread(key=mean, value=exp) %>% 
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Prev=ifelse(is.na(Prev),0,Prev)) %>%
+  mutate(group=ifelse(Acute==1&Prev==1, "Both",
+                      ifelse(Prev==1,"Prev", "Acute"))) %>% group_by(group)
+
+
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(generic=="Rimegepant") %>% select(patid, from_dt, provider, provcat)  %>% mutate(from_dt=as.Date(from_dt)) %>% distinct()
+
+PROVCAT <- read_excel("Source/CDM_Data_Reference_Lookup_Tables_V81.xlsx", sheet="PROVCAT", skip = 5)
+PROVCAT <- PROVCAT %>% select(PROVCAT, DESCRIPTION)  %>% mutate(PROVCAT=as.numeric(PROVCAT))
+MIGUS24_Doses <- MIGUS24_Doses %>%  inner_join(PROVCAT %>% select(PROVCAT, DESCRIPTION) %>% distinct(), by=c("provcat"="PROVCAT"))
+
+specialties_drug_doses_alloc <- fread("Source/specialties_drug_doses_alloc.csv")
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(specialties_drug_doses_alloc, by=c("DESCRIPTION"="original")) %>%
+  filter(final %in% c("GP", "IM", "NEURO", "OTHER PHYSICIAN") ) %>% select(patid, provider, from_dt) %>% distinct()
+  
+
+MIGUS24_Doses %>% inner_join(means_groups) %>% select(provider, mean, from_dt) %>% distinct() %>%
+  group_by(provider) %>% filter(from_dt==min(from_dt)) %>% ungroup() %>% select(-from_dt) %>% distinct() %>%
+  mutate(exp=1) %>% spread(key=mean, value=exp) %>% 
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Prev=ifelse(is.na(Prev),0,Prev)) %>%
+  mutate(group_start=ifelse(Acute==1&Prev==1, "Both",
+                      ifelse(Prev==1,"Prev", "Acute"))) %>% group_by(group_start) %>% count()
+
+
+physician_groups_start <- MIGUS24_Doses %>% inner_join(means_groups) %>% select(provider, mean, from_dt) %>% distinct() %>%
+  group_by(provider) %>% filter(from_dt==min(from_dt)) %>% ungroup() %>% select(-from_dt) %>% distinct() %>%
+  mutate(exp=1) %>% spread(key=mean, value=exp) %>% 
+  mutate(Acute=ifelse(is.na(Acute),0,Acute)) %>%
+  mutate(Prev=ifelse(is.na(Prev),0,Prev)) %>%
+  mutate(group_start=ifelse(Acute==1&Prev==1, "Both",
+                      ifelse(Prev==1,"Prev", "Acute")))
+
+physician_groups %>% select(provider, group) %>%
+  inner_join(physician_groups_start %>% select(provider, group_start)) %>%
+  group_by(group, group_start) %>% count()
+
+
+
+
+
+MIGUS24_Flows_Long <- fread("Source/MIGUS24 Flows_Long.txt")
+
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% # inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid), by=c("patient"="patid")) %>%
+  filter(grepl("136", d2)&!grepl("136", d1) & p1>=48)
+
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% select(patient, weight, p1, d1)
+
+sum(MIGUS24_Flows_Long$weight) #  56465.32
+ 
+MIGUS24_Flows_Long %>% filter(grepl("135",d1)) %>% summarise(n=sum(weight))
+
+MIGUS24_Flows_Long <- separate_rows(MIGUS24_Flows_Long, d1, sep = ",", convert=T )
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+unique(Drug_formulary$drug_group)
+
+string_Symptomatic <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Symptomatic"], collapse = "|"),")\\b")
+string_Triptan <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Triptans"], collapse = "|"),")\\b")
+string_Prev <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+string_CGRP_Injectable <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Oral"], collapse = "|"),")\\b")
+
+
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)), by=c("d1"="drug_id"))
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, CV, psychiatric, epileptic) 
+names(MIGUS24_Demographics)[1] <- "patient"
+
+MIGUS24_Flows_Long <- MIGUS24_Demographics %>% inner_join(MIGUS24_Flows_Long)
+
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Flows_Long <- MIGUS24_Flows_Long %>% filter(flag==0) %>% select(-flag)
+
+MIGUS24_Flows_Long %>% select(patient, weight, p1,d1) %>%
+  arrange(patient, weight, p1, d1) %>% group_by(patient, weight, p1) %>%
+  mutate(d1=paste0(d1, collapse = ",")) %>% distinct() %>%
+  mutate(box=ifelse(grepl(string_CGRP_Oral,d1), "O",
+                          ifelse(grepl(string_CGRP_Injectable,d1), "I",
+                                       ifelse(grepl(string_Prev,d1)&grepl(string_Triptan,d1), "K",
+                                              ifelse(grepl(string_Prev,d1) & grepl(string_Symptomatic,d1), "Y",
+                                                     ifelse(grepl(string_Prev, d1), "P",
+                                                            ifelse(grepl(string_Triptan,d1), "T",
+                                                                   ifelse(grepl(string_Symptomatic,d1), "S", "X")))))))) %>%
+  ungroup() %>% group_by(box) %>% summarise(n=sum(weight)) %>% mutate(n=ifelse(box=="X", n+5771.32,n))
+
+
+# ----------
+# Max Rank up to 1st Riemgepant - preventive only rime pats ----
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+RIME_pats <- MIGUS24_Doses %>% filter(generic=="Rimegepant") %>% select(patid) %>% distinct()
+MIGUS24_Doses <- RIME_pats %>% left_join(MIGUS24_Doses) %>% filter(generic=="Rimegepant")
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(status != "G") %>% select(-c(provider, provcat, status, code, NPI))
+range(MIGUS24_Doses$from_dt)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(from_dt = as.Date(from_dt))  %>% filter(from_dt >= "2022-11-16") %>% filter(days_sup  != "")
+MIGUS24_Doses <- MIGUS24_Doses %>% arrange(patid, generic, from_dt) 
+MIGUS24_Doses <- MIGUS24_Doses %>% group_by(patid, generic) %>% mutate(elapsed=as.numeric(lead(from_dt)-from_dt))
+MIGUS24_Doses <- MIGUS24_Doses %>% drop_na()
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(elapsed <= 92)
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(rate=30*(as.numeric(qty)/elapsed))
+
+means_groups <- MIGUS24_Doses %>% mutate(rate=ifelse(elapsed==0, 0, rate)) %>%
+  group_by(patid, weight, generic) %>% summarise(mean=mean(rate)) %>%
+  mutate(mean=ifelse(mean>=13, "Prev", "Acute")) %>% ungroup() %>% select(-generic)
+
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+string_Acutes_flows <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Symptomatic"|
+                                                                     Drug_formulary$drug_group == "Triptans"|
+                                                                     Drug_formulary$drug_group == "CGRP Oral"], collapse = "|"),")\\b")
+string_Prevs_flows <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"|Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs  %>% select(patid, weight, Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% arrange(patid, Month)
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% inner_join(Mod_Sev)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)) , by=c("Treat"="drug_id")) %>%
+  left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0) %>% select(-c(MIG_spec, remove))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+Rimegepant_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat=="136") %>% 
+  select(patid, Month, weight) %>% distinct() %>% group_by(patid) %>% filter(Month==min(Month))
+
+sum(Rimegepant_pats$weight) # 558548
+
+Drugs_to_1st_Rime <- Rimegepant_pats %>% select(-Month) %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  arrange(patid, Month) %>% group_by(patid) %>%
+  slice(if(any(grepl("136",Treat))) 1:which.max(grepl("136",Treat)) else row_number())   
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% filter(!grepl("136", Treat))
+
+Drugs_to_1st_Rime %>% filter(grepl("CGRP", drug_group)) %>% select(patid, weight, Treat) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup() %>%
+  group_by(n) %>% summarise(tot=sum(weight))
+   
+
+
+# Max Rank Up to first Riemgepant year over year
+
+exp_df <- Drugs_to_1st_Rime %>% filter(Treat!="-") %>% 
+  left_join(Rimegepant_pats %>% rename("First_Rime"="Month")) %>%
+  select(-c(Treat,Month)) %>% distinct() %>% mutate(exp=1) %>%
+  spread(key=drug_group, value=exp)
+
+exp_df[is.na(exp_df)] <- 0
+
+exp_df <- exp_df %>%
+  mutate(First_Rime=ifelse(First_Rime>=49, 5,
+                           ifelse(First_Rime>=37,4,
+                                  ifelse(First_Rime>=25,3,
+                                         ifelse(First_Rime>=13,2,1)))))
+
+exp_df %>% group_by(First_Rime, Preventive) %>% summarise(n=sum(weight)) %>% 
+  spread(key=Preventive, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, `CGRP Injectable`) %>% summarise(n=sum(weight)) %>% 
+  spread(key=`CGRP Injectable`, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, `CGRP Oral`) %>% summarise(n=sum(weight)) %>% 
+  spread(key=`CGRP Oral`, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, Triptans) %>% summarise(n=sum(weight)) %>% 
+  spread(key=Triptans, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+exp_df %>% group_by(First_Rime, Symptomatic) %>% summarise(n=sum(weight)) %>% 
+  spread(key=Symptomatic, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+
+exp_df %>% mutate(group=ifelse(`CGRP Oral`==1,"Oral",
+                               ifelse(`CGRP Injectable`==1, "Inj",
+                                      ifelse(Preventive==1, "Prev",
+                                             ifelse(Triptans==1,"Triptan", 
+                                                    ifelse(Symptomatic==1, "Sympt", NA)))))) %>%
+  inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  group_by(First_Rime, group) %>% summarise(n=sum(weight)) %>%
+  spread(key=First_Rime, value=n)
+
+
+exp_df <- exp_df %>% mutate(group=ifelse(`CGRP Oral`==1,"Oral",
+                               ifelse(`CGRP Injectable`==1, "Inj",
+                                      ifelse(Preventive==1, "Prev",
+                                             ifelse(Triptans==1,"Triptan", 
+                                                    ifelse(Symptomatic==1, "Sympt", NA)))))) 
+
+
+
+
+# KPIS based on max rank cumulative up to first rimegepant
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV") %>% select(-version)
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs  %>% select(patid, weight, Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% arrange(patid, Month)
+
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct() %>% inner_join(Mod_Sev)
+
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary %>% mutate(drug_id=as.character(drug_id)) , by=c("Treat"="drug_id")) %>%
+  left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0) %>% select(-c(MIG_spec, remove))
+
+MIGUS24_Drug_Histories_Extended_NoComorbs$patid <- as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$patid)
+
+Rimegepant_pats <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat=="136") %>% select(patid) %>% distinct()
+
+
+# Drugs 
+
+Drugs_to_1st_Rime <- Rimegepant_pats %>% left_join(MIGUS24_Drug_Histories_Extended_NoComorbs) %>%
+  arrange(patid, Month) %>% group_by(patid) %>%
+  slice(if(any(grepl("136",Treat))) 1:which.max(grepl("136",Treat)) else row_number())   
+
+Drugs_to_1st_Rime %>% ungroup() %>% select(patid, weight) %>% distinct() %>% summarise(tot=sum(weight)) # 558548
+
+unique(Drugs_to_1st_Rime$drug_group)
+
+
+N_molecules <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136") %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+N_molecules_Acute <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("CGRP Oral", "Triptans", "Symptomatic")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+N_molecules_Prev <- Drugs_to_1st_Rime %>% filter(Treat!="-" & Treat!="136" & drug_group %in% c("Preventive", "CGRP Injectable")) %>% select(patid, weight, Treat, drug_group) %>% distinct() %>%
+  group_by(patid, weight) %>% count() %>% ungroup()
+
+
+# Flows
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% arrange(patid, weight, Month, Treat) %>%
+  group_by(patid, weight, Month) %>% mutate(Treat=paste0(Treat, collapse = ",")) %>% distinct() 
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% select(-drug_group) %>% distinct()
+
+Drugs_to_1st_Rime <- Drugs_to_1st_Rime %>% group_by(patid) %>% 
+  mutate(flow=ifelse(Treat!=lag(Treat),1,0))  %>% mutate(flow=ifelse(is.na(flow),0,flow)) %>%
+  mutate(start=ifelse(Treat!="-"&lag(Treat)=="-",1,0))  %>% mutate(start=ifelse(is.na(start),0,start)) %>%
+  mutate(stop=ifelse(Treat=="-"&lag(Treat)!="-",1,0))  %>% mutate(stop=ifelse(is.na(stop),0,stop)) 
+
+N_flows <- Drugs_to_1st_Rime %>% filter(flow==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+N_starts <- Drugs_to_1st_Rime %>% filter(start==1) %>% group_by(patid, weight) %>% count() %>% ungroup()
+
+N_stops <- Drugs_to_1st_Rime %>% filter(stop==1) %>% group_by(patid, weight) %>% count() %>% ungroup() 
+
+
+exp_df %>%  inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_molecules) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_molecules_Acute) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_molecules_Prev) %>% group_by(group) %>% summarise(n=mean(n))
+
+exp_df %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_flows) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_starts) %>% group_by(group) %>% summarise(n=mean(n))
+exp_df %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>%
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(N_stops) %>% group_by(group) %>% summarise(n=mean(n))
+
+
+MIGUS24_Comorbidities_Extended_Dxs <- fread("Source/MIGUS24 Comorbidities Extended Dxs.txt")
+MIGUS24_Comorbidities_Extended_Dxs <- MIGUS24_Comorbidities_Extended_Dxs %>% filter(grepl("G43", ICD10_diag)) %>% 
+  select(patid, date) %>% distinct() %>% group_by(patid) %>% count()
+
+exp_df %>% inner_join(means_groups %>% filter(mean=="Prev") %>% select(patid) %>% mutate(patid=as.character(patid))) %>% 
+  filter(First_Rime==5) %>% select(patid, group) %>% inner_join(MIGUS24_Comorbidities_Extended_Dxs %>% mutate(patid=as.character(patid))) %>% group_by(group) %>% summarise(n=mean(n))
+
+# ---------
+# Supply days over time preventives ------------
+MIGUS24_Drug_Histories_Extended_NoComorbs <- fread("Source/MIGUS24_Drug_Histories_Extended_NoComorbs.txt")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(version=="NEW_ZAV")
+MIGUS24_Drug_Histories_Extended_NoComorbs <- gather(MIGUS24_Drug_Histories_Extended_NoComorbs, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories_Extended_NoComorbs$Month <- parse_number(as.character(MIGUS24_Drug_Histories_Extended_NoComorbs$Month))
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% filter(Treat!="*"&Treat!="-") %>% select(patid, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories_Extended_NoComorbs <- separate_rows(MIGUS24_Drug_Histories_Extended_NoComorbs, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories_Extended_NoComorbs <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% distinct()
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+Drug_formulary <- Drug_formulary %>% select(drug_id, drug_group)
+unique(Drug_formulary$drug_group)
+
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+string_Preventive <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"], collapse = "|"),")\\b")
+
+string_Acutes_flows <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Symptomatic"|
+                                                                     Drug_formulary$drug_group == "Triptans"|
+                                                                     Drug_formulary$drug_group == "CGRP Oral"], collapse = "|"),")\\b")
+string_Prevs_flows <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group == "Preventive"|Drug_formulary$drug_group == "CGRP Injectable"], collapse = "|"),")\\b")
+
+
+
+MIG_spec <- MIGUS24_Drug_Histories_Extended_NoComorbs %>% left_join(Drug_formulary, by=c("Treat"="drug_id")) %>%
+  filter(drug_group %in% c("CGRP Oral", "CGRP Injectable", "CGRP Nasal", "Triptans")) %>%
+  select(patid) %>% distinct() %>% mutate(MIG_spec=1)
+
+
+
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, CV, psychiatric, epileptic) 
+
+MIGUS24_Doses <- fread("Source/MIGUS24 Doses.txt")
+MIGUS24_Doses <- MIGUS24_Doses %>% inner_join(MIGUS24_Demographics)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% left_join(MIG_spec) %>% mutate(MIG_spec=ifelse(is.na(MIG_spec), 0, MIG_spec)) %>%
+  mutate(remove=ifelse(MIG_spec==0 & drug_group=="Preventive", 1,0)) %>% filter(remove==0)
+
+MIGUS24_Doses <- MIGUS24_Doses %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(flag==0) %>% select(-flag)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(-c(CV, psychiatric, epileptic))
+
+unique(MIGUS24_Doses$drug_group)
+MIGUS24_Doses <- MIGUS24_Doses %>% select(patid, weight, generic, drug_class, drug_group, from_dt, days_sup) 
+MIGUS24_Doses <- MIGUS24_Doses %>% filter(drug_group=="Preventive"|drug_group=="CGRP Oral")
+
+MIGUS24_Doses$from_dt <- str_sub(as.character(MIGUS24_Doses$from_dt), 1L, 7L)
+
+data.frame(MIGUS24_Doses %>% group_by(from_dt, drug_class) %>% summarise(n=sum(weight*days_sup)) %>%
+  spread(key=drug_class, value=n))
+
+data.frame(MIGUS24_Doses %>% filter(drug_class=="CGRP Oral") %>% group_by(from_dt, generic) %>% summarise(n=sum(weight*days_sup)) %>%
+  spread(key=generic, value=n))
+
+# ----------
+# Compare MIG Population Distribution based on different criteria -------
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>% select(patid, weight, migraine_onset, migraine_last_dx)
+sum(MIGUS24_Demographics$weight) # 22418159
+Plus2Dxs <- MIGUS24_Demographics %>% filter(migraine_onset!=migraine_last_dx) %>% select(patid) %>% rename("patient"="patid")
+
+MIGUS24_Flows_Long <- fread("Source/MIGUS24 Flows_Long.txt")
+MIGUS24_Flows_Long %>% filter(p2==60) %>% group_by(s2) %>% summarise(n=sum(weight)) 
+MIGUS24_Flows_Long %>% inner_join(Plus2Dxs) %>% filter(p2==60) %>% group_by(s2) %>% summarise(n=sum(weight)) 
+MIGUS24_Flows_Long %>% filter(p1>=48) %>% filter(grepl("136",d2) & !grepl("136",d1)) %>%
+  group_by(s1) %>% summarise(n=sum(weight)) 
+MIGUS24_Flows_Long %>% inner_join(Plus2Dxs) %>% filter(p1>=48) %>% filter(grepl("136",d2) & !grepl("136",d1)) %>%
+  group_by(s1) %>% summarise(n=sum(weight)) 
+
+
+MIGUS24_Drug_Histories <- fread("Source/MIGUS24 Drug Histories.txt")
+MIGUS24_Drug_Histories <- gather(MIGUS24_Drug_Histories, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% select(patient, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% filter(Treat!="-")
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+unique(Drug_formulary$drug_class)
+string_muscle_rel <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_class == "Muscle Relaxant"], collapse = "|"),")\\b")
+string_antiepilep <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_class == "Antiepileptic"&Drug_formulary$generic_name != "Topiramate"], collapse = "|"),")\\b")
+muscle_rela_pats <- MIGUS24_Drug_Histories %>% filter(grepl(string_muscle_rel, Treat)) %>% select(patient) %>% distinct() 
+antiepilep_pats <- MIGUS24_Drug_Histories %>% filter(grepl(string_antiepilep, Treat)) %>% select(patient) %>% distinct() 
+
+
+MIGUS24_pts_AllDxs <- fread("Source/MIGUS24_pts_AllDxs.txt")
+MIGUS24_pts_AllDxs$ICD10_diag <- str_sub(MIGUS24_pts_AllDxs$ICD10_diag, 1L, 2L)
+MIGUS24_pts_AllDxs <- MIGUS24_pts_AllDxs %>% select(patid, ICD10_diag) %>% distinct() %>%
+  filter(grepl("^[A-Za-z]", ICD10_diag)) %>%  filter(nchar(ICD10_diag) == 2) %>% rename("patient"="patid")
+  
+
+all_pats <- MIGUS24_Demographics %>% select(patid, weight) %>% rename("patient"="patid") %>%
+  left_join(muscle_rela_pats %>% mutate(muscle_rel=1)) %>%
+  left_join(antiepilep_pats %>% mutate(antiepilep=1)) 
+
+all_pats[is.na(all_pats)] <- 0
+
+
+MIGUS24_pts_AllDxs <- MIGUS24_pts_AllDxs %>% mutate(exp=1) %>% spread(key=ICD10_diag, value=exp)
+MIGUS24_pts_AllDxs[is.na(MIGUS24_pts_AllDxs)] <- 0
+dim(MIGUS24_pts_AllDxs)
+
+  
+MIGUS24_pts_AllDxs <- all_pats %>% left_join(MIGUS24_pts_AllDxs)
+MIGUS24_pts_AllDxs[is.na(MIGUS24_pts_AllDxs)] <- 0
+dim(MIGUS24_pts_AllDxs)
+  
+
+
+
+
+
+
+
+
+library(xgboost)
+library(caret)
+
+
+
+shap.score.rank <- function(xgb_model = xgb_mod, shap_approx = TRUE, 
+                            X_train = mydata$train_mm){
+  require(xgboost)
+  require(data.table)
+  shap_contrib <- predict(xgb_model, X_train,
+                          predcontrib = TRUE, approxcontrib = shap_approx)
+  shap_contrib <- as.data.table(shap_contrib)
+  shap_contrib[,BIAS:=NULL]
+  cat('make SHAP score by decreasing order\n\n')
+  mean_shap_score <- colMeans(abs(shap_contrib))[order(colMeans(abs(shap_contrib)), decreasing = T)]
+  return(list(shap_score = shap_contrib,
+              mean_shap_score = (mean_shap_score)))
+}
+
+# a function to standardize feature values into same range
+std1 <- function(x){
+  return ((x - min(x, na.rm = T))/(max(x, na.rm = T) - min(x, na.rm = T)))
+}
+
+
+# prep shap data
+shap.prep <- function(shap  = shap_result, X_train = mydata$train_mm, top_n){
+  require(ggforce)
+  # descending order
+  if (missing(top_n)) top_n <- dim(X_train)[2] # by default, use all features
+  if (!top_n%in%c(1:dim(X_train)[2])) stop('supply correct top_n')
+  require(data.table)
+  shap_score_sub <- as.data.table(shap$shap_score)
+  shap_score_sub <- shap_score_sub[, names(shap$mean_shap_score)[1:top_n], with = F]
+  shap_score_long <- melt.data.table(shap_score_sub, measure.vars = colnames(shap_score_sub))
+  
+  # feature values: the values in the original dataset
+  fv_sub <- as.data.table(X_train)[, names(shap$mean_shap_score)[1:top_n], with = F]
+  # standardize feature values
+  fv_sub_long <- melt.data.table(fv_sub, measure.vars = colnames(fv_sub))
+  fv_sub_long[, stdfvalue := std1(value), by = "variable"]
+  # SHAP value: value
+  # raw feature value: rfvalue; 
+  # standarized: stdfvalue
+  names(fv_sub_long) <- c("variable", "rfvalue", "stdfvalue" )
+  shap_long2 <- cbind(shap_score_long, fv_sub_long[,c('rfvalue','stdfvalue')])
+  shap_long2[, mean_value := mean(abs(value)), by = variable]
+  setkey(shap_long2, variable)
+  return(shap_long2) 
+}
+
+plot.shap.summary <- function(data_long){
+  x_bound <- max(abs(data_long$value))
+  require('ggforce') # for `geom_sina`
+  plot1 <- ggplot(data = data_long)+
+    coord_flip() + 
+    # sina plot: 
+    geom_sina(aes(x = variable, y = value, color = stdfvalue)) +
+    # print the mean absolute value: 
+    geom_text(data = unique(data_long[, c("variable", "mean_value"), with = F]),
+              aes(x = variable, y=-Inf, label = sprintf("%.3f", mean_value)),
+              size = 1, alpha = 0.5,
+              hjust = -0.2, 
+              fontface = "bold") + # bold
+    # # add a "SHAP" bar notation
+    # annotate("text", x = -Inf, y = -Inf, vjust = -0.2, hjust = 0, size = 3,
+    #          label = expression(group("|", bar(SHAP), "|"))) + 
+    scale_color_gradient(low="gold1", high="blue4", 
+                         breaks=c(0,1), labels=c("Low","High")) +
+    theme_bw() + 
+    theme(axis.line.y = element_blank(), axis.ticks.y = element_blank(), # remove axis line
+          legend.position="bottom") + 
+    geom_hline(yintercept = 0) + # the vertical line
+    scale_y_continuous(limits = c(-x_bound, x_bound)) +
+    # reverse the order of features
+    scale_x_discrete(limits = rev(levels(data_long$variable)) 
+    ) + 
+    labs(y = "SHAP value (impact on model output)", x = "", color = "Feature value") 
+  return(plot1)
+}
+
+
+
+
+
+
+var_importance <- function(shap_result, top_n=10)
+{
+  var_importance=tibble(var=names(shap_result$mean_shap_score), importance=shap_result$mean_shap_score)
+  
+  var_importance=var_importance[1:top_n,]
+  
+  ggplot(var_importance, aes(x=reorder(var,importance), y=importance)) + 
+    geom_bar(stat = "identity") + 
+    coord_flip() + 
+    theme_light() + 
+    theme(axis.title.y=element_blank()) 
+}
+
+
+test_df <- MIGUS24_pts_AllDxs %>% select(-c(weight, muscle_rel, patient))
+test_df %>% group_by(antiepilep) %>% count()
+test_df <- test_df %>% group_by(antiepilep) %>% sample_n(10000) %>% ungroup()
+
+
+
+model_hd = xgboost(data = as.matrix(test_df[,-1]), nround = 500,
+                   objective = "binary:logistic", label=as.matrix(test_df[,1]))  
+
+
+shap_result = shap.score.rank(xgb_model = model_hd,  X_train = as.matrix(test_df[,-1]), shap_approx = F)
+
+var_importance(shap_result, top_n=50)
+
+shap_long_hd = shap.prep(X_train = as.matrix(test_df[,-1]) , top_n = 25)
+
+plot.shap.summary(data_long = shap_long_hd)
+
+test_df %>% group_by(antiepilep, F3) %>% count() %>% ungroup() %>%
+  spread(key=F3, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+test_df %>% group_by(muscle_rel, E6) %>% count() %>% ungroup() %>%
+  spread(key=E6, value=n) %>% mutate(perc=`1`/(`1`+`0`))
+
+
+
+# ------
+
+
+
+# Compare MIG Population Distribution based on different criteria  V2 -------
+Mod_Sev <- fread("Source/Mod_Sev.txt")
+Mod_Sev <- Mod_Sev %>% select(patid) %>% rename("patient"="patid")
+
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>% select(patid, weight, migraine_onset, migraine_last_dx)
+sum(MIGUS24_Demographics$weight) # 22418159
+Plus2Dxs <- MIGUS24_Demographics %>% filter(migraine_onset!=migraine_last_dx) %>% select(patid) %>% rename("patient"="patid")
+
+
+MIGUS24_Drug_Histories <- fread("Source/MIGUS24 Drug Histories.txt")
+MIGUS24_Drug_Histories <- gather(MIGUS24_Drug_Histories, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% select(patient, weight, Treat) %>% distinct()
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% filter(Treat!="-")
+
+Drug_formulary <- fread("Source/Drug_formulary.txt")
+unique(Drug_formulary$drug_group)
+
+string_MIG_spec <- paste0("\\b(",paste0(Drug_formulary$drug_id[
+  Drug_formulary$drug_group == "CGRP Nasal"|
+    Drug_formulary$drug_group == "CGRP Oral"|
+    Drug_formulary$drug_group == "CGRP Injectable"|
+    Drug_formulary$drug_group == "Triptans"], collapse = "|"),")\\b")
+
+string_muscle_rel <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_class == "Muscle Relaxant"], collapse = "|"),")\\b")
+string_antiepilep <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_class == "Antiepileptic"&Drug_formulary$generic_name != "Topiramate"], collapse = "|"),")\\b")
+
+
+
+string_Sympt <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group=="Symptomatic"], collapse = "|"),")\\b")
+string_Triptan <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group=="Triptans"], collapse = "|"),")\\b")
+string_Prev <- paste0("\\b(",paste0(Drug_formulary$drug_id[(Drug_formulary$drug_group=="Preventive")], collapse = "|"),")\\b")
+string_CGRP_Oral <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group=="CGRP Oral"], collapse = "|"),")\\b")
+string_CGRP_Inj <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group=="CGRP Injectable"], collapse = "|"),")\\b")
+string_CGRP_Nasal <- paste0("\\b(",paste0(Drug_formulary$drug_id[Drug_formulary$drug_group=="CGRP Nasal"], collapse = "|"),")\\b")
+
+MIG_spec_pats <- MIGUS24_Drug_Histories %>% filter(grepl(string_MIG_spec, Treat)) %>% select(patient) %>% distinct()
+
+
+MIGUS24_Drug_Histories <- fread("Source/MIGUS24 Drug Histories.txt")
+MIGUS24_Drug_Histories <- gather(MIGUS24_Drug_Histories, Month, Treat, month1:month60, factor_key=TRUE)
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% select(patient, weight,  Month, Treat) %>% distinct()
+MIGUS24_Drug_Histories <- separate_rows(MIGUS24_Drug_Histories, Treat, sep = ",", convert=T )
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% 
+  left_join(Drug_formulary %>% select(drug_id, drug_class) %>% mutate(drug_id=as.character(drug_id)), by=c("Treat"="drug_id"))
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% mutate(drug_class=ifelse(is.na(drug_class), "Lapsed", drug_class))
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, CV, psychiatric, epileptic) 
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% inner_join(MIGUS24_Demographics, by=c("patient"="patid"))
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% mutate(flag=ifelse(CV==1&drug_class=="Beta Blocker", 1,
+                                                                 ifelse(CV==1&drug_class=="Cardiovascular",1,
+                                                                        ifelse(CV==1&drug_class=="Calcium Blocker",1,
+                                                                               ifelse(epileptic==1&drug_class=="Antiepileptic",1,
+                                                                                      ifelse(psychiatric==1&drug_class=="SSRI",1,
+                                                                                             ifelse(psychiatric==1&drug_class=="SNRI",1,
+                                                                                                    ifelse(psychiatric==1&drug_class=="Antipsychotic",1,
+                                                                                                           ifelse(psychiatric==1&drug_class=="Tricyclic",1,0)))))))))
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% filter(flag==0) %>% select(-flag)
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% select(-c(CV, psychiatric, epileptic))
+
+MIGUS24_Drug_Histories$Month <- parse_number(as.character(MIGUS24_Drug_Histories$Month))
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% select(-drug_class) %>% 
+  arrange(patient, weight, Month, Treat) %>% group_by(patient, weight, Month) %>%
+  mutate(Treat=paste0(Treat, collapse=",")) %>% distinct()
+
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% ungroup() %>% distinct()
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% filter(Month>=48)
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% mutate(Box=ifelse(grepl(string_CGRP_Nasal, Treat), "Z",
+                                   ifelse(grepl(string_CGRP_Oral, Treat), "O",
+                                          ifelse(grepl(string_CGRP_Inj, Treat), "I",
+                                                 ifelse(grepl(string_Prev, Treat)&grepl(string_Triptan, Treat), "K",
+                                                        ifelse(grepl(string_Prev, Treat)&grepl(string_Sympt, Treat), "Y",
+                                                              ifelse(grepl(string_Prev, Treat), "P",
+                                                                     ifelse(grepl(string_Triptan, Treat), "Triptan",
+                                                                            ifelse(grepl(string_Sympt, Treat), "Sympt", "Lapsed")))))))))
+
+
+
+All_pats <- fread("Source/MIGUS24 Drug Histories.txt")
+All_pats <- gather(All_pats, Month, Treat, month1:month60, factor_key=TRUE)
+All_pats <- All_pats %>% select(patient, weight, Month) %>% distinct()
+All_pats$Month <- parse_number(as.character(All_pats$Month))
+
+MIGUS24_Drug_Histories <- All_pats %>% left_join(MIGUS24_Drug_Histories) %>% 
+  mutate(Treat=ifelse(is.na(Treat),"-", Treat)) %>%
+  mutate(Box=ifelse(is.na(Box),"Lapsed", Box))
+
+
+MIGUS24_Drug_Histories %>% select(patient, weight) %>% distinct() %>% summarise(n=sum(weight)) # 21292150
+MIGUS24_Drug_Histories %>% select(patient, weight) %>% distinct() %>% inner_join(Plus2Dxs) %>% summarise(n=sum(weight)) # 13126433
+MIGUS24_Drug_Histories %>% select(patient, weight) %>% distinct() %>% 
+  inner_join(Plus2Dxs %>% full_join(MIG_spec_pats) %>% distinct()) %>% summarise(n=sum(weight)) # 15665529
+
+MIGUS24_Drug_Histories %>% filter(Month==60) %>% group_by(Box) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories %>% inner_join(Plus2Dxs) %>%  filter(Month==60) %>% group_by(Box) %>% summarise(n=sum(weight))
+MIGUS24_Drug_Histories %>% inner_join(Plus2Dxs %>% full_join(MIG_spec_pats) %>% distinct()) %>%  filter(Month==60) %>% group_by(Box) %>% summarise(n=sum(weight))
+
+MIGUS24_Drug_Histories %>% arrange(patient, Month) %>%
+  group_by(patient) %>% filter(!grepl("136",Treat) & grepl("136",lead(Treat))) %>%
+  ungroup() %>% group_by(Box) %>% summarise(n=sum(weight))
+
+MIGUS24_Drug_Histories %>% inner_join(Plus2Dxs) %>%  arrange(patient, Month) %>%
+  group_by(patient) %>% filter(!grepl("136",Treat) & grepl("136",lead(Treat))) %>%
+  ungroup() %>% group_by(Box) %>% summarise(n=sum(weight))
+
+MIGUS24_Drug_Histories %>% inner_join(Plus2Dxs %>% full_join(MIG_spec_pats) %>% distinct())  %>%  arrange(patient, Month) %>%
+  group_by(patient) %>% filter(!grepl("136",Treat) & grepl("136",lead(Treat))) %>%
+  ungroup() %>% group_by(Box) %>% summarise(n=sum(weight))
+
+MIGUS24_Drug_Histories <- separate_rows(MIGUS24_Drug_Histories, Treat, sep = ",", convert=T )
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% filter(!grepl(string_muscle_rel, Treat)) 
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% mutate(epileptics=ifelse(grepl(string_antiepilep, Treat),1,0))
+
+
+MIGUS24_Demographics <- fread("Source/MIGUS24 Demographics.txt")
+MIGUS24_Demographics <- MIGUS24_Demographics %>%  select(patid, epileptic) 
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% left_join(MIGUS24_Demographics, by=c("patient"="patid")) %>% 
+  mutate(to_exclude=ifelse(epileptic==1&epileptics==1,1,0)) %>% filter(to_exclude!=1) %>%
+  select(-c(to_exclude, epileptic, epileptics))
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% arrange(patient, weight, Month, Treat) %>%
+  group_by(patient, weight, Month) %>% mutate(Treat=paste0(Treat, collapse=",")) %>% distinct()
+
+MIGUS24_Drug_Histories <- All_pats %>% left_join(MIGUS24_Drug_Histories) %>% 
+  mutate(Treat=ifelse(is.na(Treat),"-", Treat)) %>%
+  mutate(Box=ifelse(is.na(Box),"Lapsed", Box))
+
+
+
+MIGUS24_Drug_Histories <- MIGUS24_Drug_Histories %>% mutate(Box=ifelse(grepl(string_CGRP_Nasal, Treat), "Z",
+                                   ifelse(grepl(string_CGRP_Oral, Treat), "O",
+                                          ifelse(grepl(string_CGRP_Inj, Treat), "I",
+                                                 ifelse(grepl(string_Prev, Treat)&grepl(string_Triptan, Treat), "K",
+                                                        ifelse(grepl(string_Prev, Treat)&grepl(string_Sympt, Treat), "Y",
+                                                              ifelse(grepl(string_Prev, Treat), "P",
+                                                                     ifelse(grepl(string_Triptan, Treat), "Triptan",
+                                                                            ifelse(grepl(string_Sympt, Treat), "Sympt", "Lapsed")))))))))
+
+
+
+MIGUS24_Drug_Histories %>% filter(Month==60) %>% group_by(Box) %>% summarise(n=sum(weight))
+
+
+MIGUS24_Drug_Histories %>% arrange(patient, Month) %>%
+  group_by(patient) %>% filter(!grepl("136",Treat) & grepl("136",lead(Treat))) %>%
+  ungroup() %>% group_by(Box) %>% summarise(n=sum(weight))
+
+
+# ------
